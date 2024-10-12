@@ -34,7 +34,6 @@ describe('UsersService', () => {
       const createUserDto: CreateUserDto = {
         name: 'John',
         email: 'john@example.com',
-        phoneNumber: '+12345678900',
       };
       const user = { id: 1, ...createUserDto };
 
@@ -71,7 +70,6 @@ describe('UsersService', () => {
         id: 1,
         name: 'John',
         email: 'john@example.com',
-        phoneNumber: '+12345678900',
       };
 
       jest.spyOn(repository, 'findOneBy').mockResolvedValue(user);
@@ -95,7 +93,6 @@ describe('UsersService', () => {
         id: 1,
         name: 'John',
         email: 'john@example.com',
-        phoneNumber: '+12345678900',
       };
       const updatedUser = { ...user, ...updateUserDto };
 

@@ -16,7 +16,6 @@ export class UsersService {
     const user = this.usersRepository.create();
     user.name = createUserDto.name;
     user.email = createUserDto.email;
-    user.phoneNumber = createUserDto.phoneNumber;
 
     return this.usersRepository.save(user);
   }
