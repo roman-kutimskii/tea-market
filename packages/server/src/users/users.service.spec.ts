@@ -5,6 +5,7 @@ import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { NotFoundException } from '@nestjs/common';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -14,10 +15,7 @@ describe('UsersService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UsersService,
-        {
-          provide: getRepositoryToken(User),
-          useClass: Repository,
-        },
+        { provide: getRepositoryToken(User), useClass: Repository },
       ],
     }).compile();
 
@@ -48,14 +46,7 @@ describe('UsersService', () => {
 
   describe('findAll', () => {
     it('should return an array of users', async () => {
-      const users = [
-        {
-          id: 1,
-          name: 'John',
-          email: 'john@example.com',
-          phoneNumber: '+12345678900',
-        },
-      ];
+      const users = [{ id: 1, name: 'John', email: 'john@example.com' }];
 
       jest.spyOn(repository, 'find').mockResolvedValue(users);
 
@@ -66,11 +57,7 @@ describe('UsersService', () => {
 
   describe('findOne', () => {
     it('should return a user', async () => {
-      const user = {
-        id: 1,
-        name: 'John',
-        email: 'john@example.com',
-      };
+      const user = { id: 1, name: 'John', email: 'john@example.com' };
 
       jest.spyOn(repository, 'findOneBy').mockResolvedValue(user);
 
@@ -88,12 +75,8 @@ describe('UsersService', () => {
 
   describe('update', () => {
     it('should update a user', async () => {
-      const updateUserDto = { name: 'John Updated' };
-      const user = {
-        id: 1,
-        name: 'John',
-        email: 'john@example.com',
-      };
+      const updateUserDto: UpdateUserDto = { name: 'John Updated' };
+      const user = { id: 1, name: 'John', email: 'john@example.com' };
       const updatedUser = { ...user, ...updateUserDto };
 
       jest.spyOn(repository, 'findOneBy').mockResolvedValue(user);
