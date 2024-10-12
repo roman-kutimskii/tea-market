@@ -34,7 +34,7 @@ describe('UsersController', () => {
   });
 
   describe('create', () => {
-    it('should create a user', async () => {
+    it('should call service.create with correct data', async () => {
       const createUserDto: CreateUserDto = {
         name: 'John',
         email: 'john@example.com',
