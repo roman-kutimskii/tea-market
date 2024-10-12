@@ -160,7 +160,6 @@ erDiagram
         int client_id PK
         string name
         string email
-        string phone_number
     }
     
     SALE {
@@ -185,12 +184,8 @@ erDiagram
     
     SELLER {
         int seller_id PK
-        string first_name
-        string last_name
-        string username
+        string surname
         string password
-        date birth_date
-        float salary
     }
     
     TEA_PARTY {
