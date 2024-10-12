@@ -6,6 +6,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import databaseConfig from './config/database.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SellersModule } from './sellers/sellers.module';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { SellersModule } from './sellers/sellers.module';
     }),
     UsersModule,
     SellersModule,
+    CommonModule,
   ],
   controllers: [AppController],
   providers: [AppService],
