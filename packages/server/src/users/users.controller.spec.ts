@@ -38,7 +38,7 @@ describe('UsersController', () => {
       const createUserDto: CreateUserDto = {
         name: 'John',
         email: 'john@example.com',
-        phoneNumber: '123456789',
+        phoneNumber: '+12345678900',
       };
 
       await controller.create(createUserDto);
@@ -68,11 +68,7 @@ describe('UsersController', () => {
   describe('update', () => {
     it('should call service.update with correct parameters', async () => {
       const userId = '1';
-      const updateUserDto: UpdateUserDto = {
-        name: 'new name',
-        email: 'new email',
-        phoneNumber: 'new phoneNumber',
-      };
+      const updateUserDto: UpdateUserDto = { name: 'John Updated' };
 
       await controller.update(userId, updateUserDto);
 
