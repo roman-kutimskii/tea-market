@@ -7,6 +7,7 @@ import react from "eslint-plugin-react";
 import eslintConfigPrettier from "eslint-config-prettier";
 import vitest from "eslint-plugin-vitest";
 import testingLibrary from "eslint-plugin-testing-library";
+import jestDom from "eslint-plugin-jest-dom";
 
 export default tseslint.config(
   { ignores: ["dist"] },
@@ -40,4 +41,5 @@ export default tseslint.config(
     },
   },
   eslintConfigPrettier,
+  jestDom.configs["flat/recommended"],
 );
