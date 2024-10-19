@@ -6,9 +6,11 @@ import tseslint from "typescript-eslint";
 import react from "eslint-plugin-react";
 import eslintConfigPrettier from "eslint-config-prettier";
 import vitest from "eslint-plugin-vitest";
+import testingLibrary from "eslint-plugin-testing-library";
 
 export default tseslint.config(
   { ignores: ["dist"] },
+  testingLibrary.configs["flat/react"],
   {
     extends: [js.configs.recommended, ...tseslint.configs.strictTypeChecked, ...tseslint.configs.stylisticTypeChecked],
     files: ["**/*.{ts,tsx}"],
@@ -34,6 +36,7 @@ export default tseslint.config(
       ...react.configs["jsx-runtime"].rules,
       "@typescript-eslint/consistent-type-definitions": ["error", "type"],
       ...vitest.configs.recommended.rules,
+      "testing-library/no-manual-cleanup": "off",
     },
   },
   eslintConfigPrettier,

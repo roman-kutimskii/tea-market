@@ -22,7 +22,7 @@ exports[`App Component > renders with default props 1`] = `
       <img
         alt="React logo"
         class="logo react"
-        src="/src/assets/react.svg"
+        src="/src/components/App/assets/react.svg"
       />
     </a>
   </div>
