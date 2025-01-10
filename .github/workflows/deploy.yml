@@ -16,8 +16,10 @@ jobs:
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
         run: |
-          echo "$SSH_PRIVATE_KEY" > private_key
-          chmod 600 private_key
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
           ssh -i private_key -p 223 $SSH_USER@$SSH_HOST "
             cd ~/tea-market &&
             git pull origin master &&
