@@ -1,0 +1,17 @@
+{
+  "name": "tea-market",
+  "version": "0.0.0",
+  "description": "Система для управления чайным магазином",
+  "workspaces": [
+    "packages/*"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/roman-kutimskii/tea-market.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/roman-kutimskii/tea-market/pulls"
+  },
+  "homepage": "https://github.com/roman-kutimskii/tea-market#readme"
+}
