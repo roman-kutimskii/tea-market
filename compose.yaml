@@ -10,5 +10,10 @@ services:
     ports:
       - "5432:5432"
 
+  client:
+    build: ./packages/client
+    ports:
+      - "80:80"
+
 volumes:
   db-data:
