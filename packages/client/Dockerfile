@@ -1,4 +1,4 @@
-FROM node:alpine AS build
+FROM node:alpine
 
 WORKDIR /app
 
@@ -10,9 +10,10 @@ COPY . .
 
 RUN npm run build
 
-FROM nginx
+FROM nginx:alpine
 
-COPY --from=build /app/dist /usr/share/nginx/html
+COPY --from=0 /app/dist /usr/share/nginx/html/tea-market
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 
