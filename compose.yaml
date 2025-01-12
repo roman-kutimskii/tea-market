@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres
+    image: postgres:alpine
     restart: always
     shm_size: 128mb
     volumes:
@@ -13,7 +13,7 @@ services:
   client:
     build: ./packages/client
     ports:
-      - "80:80"
+      - "8080:80"
 
 volumes:
   db-data:
