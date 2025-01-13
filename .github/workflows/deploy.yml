@@ -1,6 +1,10 @@
 name: Build and Deploy to Cloud Server
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
   build-and-deploy:
