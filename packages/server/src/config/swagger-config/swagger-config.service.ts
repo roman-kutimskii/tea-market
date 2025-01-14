@@ -13,6 +13,8 @@ export class SwaggerConfigService {
 
   setupSwagger(app: INestApplication) {
     const document = this.createSwaggerDocument(app);
-    SwaggerModule.setup('tea-market/api/swagger', app, document);
+    SwaggerModule.setup('swagger', app, document, {
+      useGlobalPrefix: true,
+    });
   }
 }
