@@ -38,5 +38,6 @@ jobs:
           ssh -p 223 $SSH_USER@$SSH_HOST "
             cd ~/tea-market &&
             git pull origin main &&
+            docker compose down --rmi all &&
             docker compose up --build -d
           "
