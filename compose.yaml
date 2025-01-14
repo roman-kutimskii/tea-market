@@ -4,11 +4,9 @@ services:
     restart: always
     shm_size: 128mb
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-    ports:
-      - "5432:5432"
 
   server:
     build: ./packages/server
@@ -27,4 +25,4 @@ services:
       - server
 
 volumes:
-  db-data:
+  pgdata:
