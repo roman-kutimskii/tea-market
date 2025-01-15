@@ -10,6 +10,8 @@ export class Sale {
   @ManyToOne(() => Seller, (seller) => seller.sales)
   seller: Seller;
 
-  @OneToMany(() => SaleToItem, (saleToItem) => saleToItem.sale)
+  @OneToMany(() => SaleToItem, (saleToItem) => saleToItem.sale, {
+    cascade: ['remove'],
+  })
   saleToItems: SaleToItem[];
 }
