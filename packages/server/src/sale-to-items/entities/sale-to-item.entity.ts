@@ -2,7 +2,7 @@ import { Item } from 'src/items/entities/item.entity';
 import { Sale } from 'src/sales/entities/sale.entity';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('sale_items')
+@Entity('sale_to_items')
 export class SaleToItem {
   @PrimaryGeneratedColumn()
   saleToItemId: number;
