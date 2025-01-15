@@ -109,9 +109,6 @@ export class SalesService {
       return this.findOne(id);
     } catch (error) {
       await queryRunner.rollbackTransaction();
-      if (error instanceof EntityNotFoundError) {
-        throw new NotFoundException(error);
-      }
       throw error;
     } finally {
       await queryRunner.release();

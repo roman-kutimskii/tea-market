@@ -34,16 +34,9 @@ export class ItemsService {
   }
 
   async update(id: number, updateItemDto: UpdateItemDto) {
-    try {
-      const item = await this.itemsRepository.findOneByOrFail({ id });
-      Object.assign(item, updateItemDto);
-      return this.itemsRepository.save(item);
-    } catch (error) {
-      if (error instanceof EntityNotFoundError) {
-        throw new NotFoundException(error);
-      }
-      throw error;
-    }
+    const item = await this.findOne(id);
+    Object.assign(item, updateItemDto);
+    return this.itemsRepository.save(item);
   }
 
   remove(id: number) {

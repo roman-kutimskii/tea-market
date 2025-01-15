@@ -35,16 +35,9 @@ export class SellersService {
   }
 
   async update(id: number, updateSellerDto: UpdateSellerDto) {
-    try {
-      const seller = await this.sellersRepository.findOneByOrFail({ id });
-      Object.assign(seller, updateSellerDto);
-      return this.sellersRepository.save(seller);
-    } catch (error) {
-      if (error instanceof EntityNotFoundError) {
-        throw new NotFoundException(error);
-      }
-      throw error;
-    }
+    const seller = await this.findOne(id);
+    Object.assign(seller, updateSellerDto);
+    return this.sellersRepository.save(seller);
   }
 
   remove(id: number) {
