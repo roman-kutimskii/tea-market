@@ -4,7 +4,7 @@ import { Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 @Entity('items')
 export class Item {
   @PrimaryGeneratedColumn()
-  itemId: number;
+  id: number;
 
   @OneToMany(() => SaleToItem, (saleToItem) => saleToItem.item)
   saleToItems: SaleToItem[];

@@ -5,13 +5,7 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 @Entity('sale_to_items')
 export class SaleToItem {
   @PrimaryGeneratedColumn()
-  saleToItemId: number;
-
-  @Column()
-  itemId: number;
-
-  @Column()
-  saleId: number;
+  id: number;
 
   @Column()
   quantity: number;
