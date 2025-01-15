@@ -1,9 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Item } from './entities/item.entity';
+import { Repository } from 'typeorm';
+import { SaleToItem } from 'src/sale-to-items/entities/sale-to-item.entity';
 
 @Injectable()
 export class ItemsService {
+  constructor(
+    @InjectRepository(Item)
+    private itemsRepository: Repository<Item>,
+    @InjectRepository(SaleToItem)
+    private saleToItemsRepository: Repository<SaleToItem>,
+  ) {}
+
   create(createItemDto: CreateItemDto) {
     return 'This action adds a new item';
   }
