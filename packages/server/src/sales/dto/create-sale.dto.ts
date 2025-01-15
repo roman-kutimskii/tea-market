@@ -1,1 +1,3 @@
-export class CreateSaleDto {}
+export class CreateSaleDto {
+  sellerId: number;
+}
