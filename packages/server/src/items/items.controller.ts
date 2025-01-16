@@ -6,10 +6,12 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { ItemsService } from './items.service';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
+import { ApiQuery } from '@nestjs/swagger';
 
 @Controller('items')
 export class ItemsController {
@@ -21,8 +23,10 @@ export class ItemsController {
   }
 
   @Get()
-  findAll() {
-    return this.itemsService.findAll();
+  @ApiQuery({ name: 'lastId', required: false })
+  @ApiQuery({ name: 'limit', required: false })
+  findAll(@Query('lastId') lastId?: number, @Query('limit') limit?: number) {
+    return this.itemsService.findAll(lastId, limit);
   }
 
   @Get(':id')

@@ -7,7 +7,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('tea-market/api');
   app.get(SwaggerConfigService).setupSwagger(app);
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
   await app.listen(3000);
 }
 bootstrap();
