@@ -17,8 +17,20 @@ export class ItemsService {
     return this.itemsRepository.save(item);
   }
 
-  findAll() {
-    return this.itemsRepository.find();
+  findAll(lastId?: number, limit?: number) {
+    const query = this.itemsRepository
+      .createQueryBuilder('item')
+      .orderBy('item.id');
+
+    if (limit) {
+      query.limit(limit);
+    }
+
+    if (lastId) {
+      query.where('item.id > :lastId', { lastId });
+    }
+
+    return query.getMany();
   }
 
   async findOne(id: number) {
