@@ -38,6 +38,7 @@ export default tseslint.config(
       "@typescript-eslint/consistent-type-definitions": ["error", "type"],
       ...vitest.configs.recommended.rules,
       "testing-library/no-manual-cleanup": "off",
+      "no-restricted-imports": ["error", { patterns: ["@mui/*/*/*"] }],
     },
   },
   eslintConfigPrettier,
