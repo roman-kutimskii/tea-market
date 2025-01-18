@@ -14,8 +14,6 @@ export class SalesService {
   constructor(
     @InjectRepository(Sale)
     private salesRepository: Repository<Sale>,
-    @InjectRepository(SaleToItem)
-    private saleToItemsRepository: Repository<SaleToItem>,
     private usersService: UsersService,
     private itemsService: ItemsService,
     private dataSource: DataSource,
