@@ -9,8 +9,7 @@ import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { IS_PUBLIC_KEY } from './decorators/public.decorator';
-
-type CustomRequest = Request & { user: Record<string, unknown> };
+import { CustomRequest } from './types';
 
 @Injectable()
 export class AuthGuard implements CanActivate {

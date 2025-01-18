@@ -17,7 +17,7 @@ export class AuthService {
     if (!(await compare(password, user.passwordHash))) {
       throw new UnauthorizedException();
     }
-    const payload = { sub: user.id, email: email };
+    const payload = { sub: user.id, email, role: user.role };
     return {
       access_toker: await this.jwtService.signAsync(payload),
     };
@@ -31,7 +31,7 @@ export class AuthService {
       passwordHash,
       role: 'customer',
     });
-    const payload = { sub: user.id, email: email };
+    const payload = { sub: user.id, email, role: user.role };
     return {
       access_toker: await this.jwtService.signAsync(payload),
     };
