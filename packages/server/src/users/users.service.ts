@@ -18,6 +18,7 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserWithRoleDto) {
+    // TODO: Добавить транзакцию, чтобы не увеличивать счетчик id
     try {
       const user = this.usersRepository.create(createUserDto);
       return await this.usersRepository.save(user);

@@ -3,19 +3,24 @@ import { compare, genSalt, hash } from 'bcrypt';
 import { UsersService } from 'src/users/users.service';
 import { SignUpDto } from './dto/sign-up.dto';
 import { SignInDto } from './dto/sign-in.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private jwtService: JwtService,
+  ) {}
 
   async signIn({ email, password }: SignInDto): Promise<unknown> {
     const user = await this.usersService.findOneByEmail(email);
     if (!(await compare(password, user.passwordHash))) {
       throw new UnauthorizedException();
     }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { passwordHash, ...result } = user;
-    return result;
+    const payload = { sub: user.id, email: email };
+    return {
+      access_toker: await this.jwtService.signAsync(payload),
+    };
   }
 
   async signUp({ email, password }: SignUpDto): Promise<unknown> {
@@ -26,8 +31,9 @@ export class AuthService {
       passwordHash,
       role: 'customer',
     });
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { passwordHash: _, ...result } = user;
-    return result;
+    const payload = { sub: user.id, email: email };
+    return {
+      access_toker: await this.jwtService.signAsync(payload),
+    };
   }
 }
