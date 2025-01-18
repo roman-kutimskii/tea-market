@@ -11,8 +11,12 @@ import {
 import { ItemsService } from './items.service';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
-import { ApiQuery } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { Role } from 'src/auth/enums/role.enum';
 
+@ApiBearerAuth()
+@Roles(Role.Seller, Role.Admin)
 @Controller('items')
 export class ItemsController {
   constructor(private readonly itemsService: ItemsService) {}

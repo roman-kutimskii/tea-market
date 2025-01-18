@@ -10,7 +10,12 @@ import {
 import { SalesService } from './sales.service';
 import { CreateSaleDto } from './dto/create-sale.dto';
 import { UpdateSaleDto } from './dto/update-sale.dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { Role } from 'src/auth/enums/role.enum';
 
+@ApiBearerAuth()
+@Roles(Role.Seller, Role.Admin)
 @Controller('sales')
 export class SalesController {
   constructor(private readonly salesService: SalesService) {}
