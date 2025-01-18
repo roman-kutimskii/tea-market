@@ -14,10 +14,14 @@ import { UpdateUserDto } from './dto/update-user.dto';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+  @Post('seller')
+  createSeller(@Body() createUserDto: CreateUserDto) {
+    return this.usersService.create({ role: 'seller', ...createUserDto });
+  }
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  @Post('customer')
+  createCustomer(@Body() createUserDto: CreateUserDto) {
+    return this.usersService.create({ role: 'customer', ...createUserDto });
   }
 
   @Get()

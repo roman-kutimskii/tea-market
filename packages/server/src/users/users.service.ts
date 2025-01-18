@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { EntityNotFoundError } from 'typeorm/error/EntityNotFoundError';
+import { CreateUserWithRoleDto } from './dto/create-user-with-role.dto';
 
 @Injectable()
 export class UsersService {
@@ -13,7 +13,7 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) {}
 
-  create(createUserDto: CreateUserDto) {
+  create(createUserDto: CreateUserWithRoleDto) {
     const user = this.usersRepository.create(createUserDto);
     return this.usersRepository.save(user);
   }
@@ -25,6 +25,18 @@ export class UsersService {
   async findOne(id: number) {
     try {
       const user = await this.usersRepository.findOneByOrFail({ id });
+      return user;
+    } catch (error) {
+      if (error instanceof EntityNotFoundError) {
+        throw new NotFoundException(error);
+      }
+      throw error;
+    }
+  }
+
+  async findOneByEmail(email: string) {
+    try {
+      const user = await this.usersRepository.findOneByOrFail({ email });
       return user;
     } catch (error) {
       if (error instanceof EntityNotFoundError) {
