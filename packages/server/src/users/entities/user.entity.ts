@@ -1,8 +1,8 @@
 import { Sale } from 'src/sales/entities/sale.entity';
 import { Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
-@Entity('sellers')
-export class Seller {
+@Entity('users')
+export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
