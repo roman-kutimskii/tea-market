@@ -7,6 +7,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth.guard';
 import { RolesGuard } from './roles.guard';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { RefreshToken } from './entities/refresh-token.entity';
 
 @Module({
   imports: [
@@ -20,6 +22,7 @@ import { RolesGuard } from './roles.guard';
       }),
       inject: [ConfigService],
     }),
+    TypeOrmModule.forFeature([RefreshToken]),
   ],
   controllers: [AuthController],
   providers: [

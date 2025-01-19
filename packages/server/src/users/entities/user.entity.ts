@@ -1,3 +1,4 @@
+import { RefreshToken } from 'src/auth/entities/refresh-token.entity';
 import { Sale } from 'src/sales/entities/sale.entity';
 import {
   Entity,
@@ -30,4 +31,7 @@ export class User {
 
   @OneToMany(() => Sale, (sale) => sale.seller)
   sales: Sale[];
+
+  @OneToMany(() => RefreshToken, (refreshToken) => refreshToken.user)
+  refreshTokens: RefreshToken[];
 }
