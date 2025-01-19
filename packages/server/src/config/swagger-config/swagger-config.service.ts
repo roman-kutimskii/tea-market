@@ -6,6 +6,7 @@ export class SwaggerConfigService {
   createSwaggerDocument(app: INestApplication): OpenAPIObject {
     const config = new DocumentBuilder()
       .setTitle('Tea Market API Reference')
+      .addBearerAuth()
       .build();
 
     return SwaggerModule.createDocument(app, config);

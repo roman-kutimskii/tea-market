@@ -6,7 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Sale } from './entities/sale.entity';
 import { SaleToItem } from 'src/sale-to-items/entities/sale-to-item.entity';
 import { EntityNotFoundError } from 'typeorm/error/EntityNotFoundError';
-import { SellersService } from 'src/sellers/sellers.service';
+import { UsersService } from 'src/users/users.service';
 import { ItemsService } from 'src/items/items.service';
 
 @Injectable()
@@ -14,9 +14,7 @@ export class SalesService {
   constructor(
     @InjectRepository(Sale)
     private salesRepository: Repository<Sale>,
-    @InjectRepository(SaleToItem)
-    private saleToItemsRepository: Repository<SaleToItem>,
-    private sellerService: SellersService,
+    private usersService: UsersService,
     private itemsService: ItemsService,
     private dataSource: DataSource,
   ) {}
@@ -27,7 +25,7 @@ export class SalesService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      const seller = await this.sellerService.findOne(createSaleDto.sellerId);
+      const seller = await this.usersService.findOne(createSaleDto.sellerId);
       const sale = queryRunner.manager.create(Sale, { seller });
       const savedSale = await queryRunner.manager.save(Sale, sale);
 
@@ -81,7 +79,7 @@ export class SalesService {
       const sale = await this.findOne(id);
 
       if (updateSaleDto.sellerId) {
-        const seller = await this.sellerService.findOne(updateSaleDto.sellerId);
+        const seller = await this.usersService.findOne(updateSaleDto.sellerId);
         sale.seller = seller;
       }
 
