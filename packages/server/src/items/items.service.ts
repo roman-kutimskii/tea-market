@@ -45,6 +45,13 @@ export class ItemsService {
     }
   }
 
+  search(query: string) {
+    return this.itemsRepository
+      .createQueryBuilder('item')
+      .where('item.searchVector @@ plainto_tsquery(:query)', { query })
+      .getMany();
+  }
+
   async update(id: number, updateItemDto: UpdateItemDto) {
     const item = await this.findOne(id);
     Object.assign(item, updateItemDto);
