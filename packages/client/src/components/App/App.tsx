@@ -1,4 +1,3 @@
-import "./App.css";
 import Alert from "@mui/material/Alert";
 import Container from "@mui/material/Container";
 
