@@ -4,10 +4,13 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { NavMenu } from "./NavMenu";
-import { useMediaQuery, useTheme } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { useTheme } from "@mui/material/styles";
 import { LogoIcon } from "./LogoIcon";
 import { Link } from "react-router";
 import { UserMenu } from "./UserMenu";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
 const pages = [
   { name: "Catalog", path: "/catalog" },
@@ -46,6 +49,9 @@ export const AppBar = () => {
             </Button>
           ))}
         </Box>
+        <IconButton>
+          <ShoppingCartIcon />
+        </IconButton>
         <UserMenu />
       </Toolbar>
     </MuiAppBar>
