@@ -2,8 +2,11 @@ import Alert from "@mui/material/Alert";
 import Container from "@mui/material/Container";
 import { Route, Routes } from "react-router";
 import Layout from "../Layout/Layout";
+import { useFavicon } from "../../hooks/useFavicon";
 
 function App() {
+  useFavicon();
+
   return (
     <Container fixed>
       <Alert severity="warning">Это учебный проект. Пожалуйста, не совершайте на нём никаких действий.</Alert>
