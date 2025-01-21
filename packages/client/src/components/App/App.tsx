@@ -13,8 +13,10 @@ function App() {
       <Routes>
         <Route element={<Layout />}>
           <Route index element={<div>Index</div>} />
-          <Route path="panel" element={<div>Panel</div>} />
+          <Route path="catalog" element={<div>Catalog</div>} />
+          <Route path="admin" element={<div>Admin</div>} />
           <Route path="profile" element={<div>Profile</div>} />
+          <Route path="account" element={<div>Account</div>} />
         </Route>
       </Routes>
     </Container>
