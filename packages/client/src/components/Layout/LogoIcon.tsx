@@ -1,4 +1,5 @@
-import { SxProps, Theme, SvgIcon } from "@mui/material";
+import { SxProps, Theme } from "@mui/material/styles";
+import SvgIcon from "@mui/material/SvgIcon";
 
 type LogoIconProps = { sx: SxProps<Theme> };
 
