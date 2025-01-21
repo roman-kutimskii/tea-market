@@ -14,7 +14,7 @@ export const NavMenu = ({ pages }: NavMenuProps) => {
 
   return (
     <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-      <IconButton size="large" onClick={handleOpenMenu} color="inherit">
+      <IconButton onClick={handleOpenMenu} color="inherit">
         <MenuIcon />
       </IconButton>
       <Menu
