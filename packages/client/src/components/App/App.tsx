@@ -3,6 +3,7 @@ import Container from "@mui/material/Container";
 import { Route, Routes } from "react-router";
 import Layout from "../Layout/Layout";
 import { useFavicon } from "../../hooks/useFavicon";
+import AdminPanel from "../Layout/AdminPanel/AdminPanel";
 
 function App() {
   useFavicon();
@@ -14,7 +15,7 @@ function App() {
         <Route element={<Layout />}>
           <Route index element={<div>Index</div>} />
           <Route path="catalog" element={<div>Catalog</div>} />
-          <Route path="admin" element={<div>Admin</div>} />
+          <Route path="admin" element={<AdminPanel />} />
           <Route path="profile" element={<div>Profile</div>} />
           <Route path="account" element={<div>Account</div>} />
         </Route>

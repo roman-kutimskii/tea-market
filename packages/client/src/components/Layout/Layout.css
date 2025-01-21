@@ -1,0 +1,15 @@
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+}
+
+.buttons-group {
+    display: flex;
+}
+
+.logo {
+    width: 30px;
+    height: auto;
+    display: flex;
+    margin-right: 10px;
+}
