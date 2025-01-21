@@ -8,7 +8,6 @@ export const useFavicon = () => {
 
   useEffect(() => {
     const favicon = document.querySelector<HTMLLinkElement>("link[rel=icon]");
-    console.log(favicon);
     if (favicon) {
       favicon.href = colorScheme === "light" ? lightLogo : darkLogo;
     }
