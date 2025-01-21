@@ -77,7 +77,7 @@ const AdminPanel = () => {
       ],
     },
   ];
-
+  // todo useEffect
   const [selectedTab, setSelectedTab] = useState(0);
 
   const handleTabChange = (_event: unknown, newValue: number) => {
