@@ -19,14 +19,10 @@ import { Role } from 'src/auth/enums/role.enum';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-  @Post('seller')
-  createSeller(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create({ role: 'seller', ...createUserDto });
-  }
 
-  @Post('customer')
+  @Post()
   createCustomer(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create({ role: 'customer', ...createUserDto });
+    return this.usersService.create(createUserDto);
   }
 
   @Get()

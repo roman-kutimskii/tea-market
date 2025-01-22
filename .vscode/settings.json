@@ -1,0 +1,8 @@
+{
+    "jest.virtualFolders": [
+        {
+            "name": "server",
+            "rootPath": "./packages/server",
+        }
+    ]
+}
