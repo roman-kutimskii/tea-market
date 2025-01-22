@@ -1,10 +1,13 @@
-import { IsEmail, IsNotEmpty } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsEnum } from 'class-validator';
+import { Role } from 'src/auth/enums/role.enum';
 
 export class CreateUserDto {
   @IsEmail()
   email: string;
 
-  // TODO: Заменить на пароль и хешировать в контроллере (сервисе)
   @IsNotEmpty()
-  passwordHash: string;
+  password: string;
+
+  @IsEnum(Role)
+  role: Role;
 }
