@@ -11,6 +11,8 @@ import { LogoIcon } from "./LogoIcon";
 import { Link } from "react-router";
 import { UserMenu } from "./UserMenu";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { useContext, useState, useEffect } from "react";
+import { AuthContext } from "../App/AppContext";
 
 const pages = [
   { name: "Catalog", path: "/catalog" },
@@ -20,6 +22,13 @@ const pages = [
 export const AppBar = () => {
   const theme = useTheme();
   const mobile = useMediaQuery(theme.breakpoints.down("md"));
+
+  const authorization = useContext(AuthContext);
+  const [role, setRole] = useState<string>(String(localStorage.getItem("userRole")));
+
+  useEffect(() => {
+    setRole(String(localStorage.getItem("userRole")));
+  }, [authorization.auth]);
 
   return (
     <MuiAppBar position="static">
@@ -43,11 +52,16 @@ export const AppBar = () => {
           Tea Market
         </Typography>
         <Box flexGrow={1} sx={{ display: { xs: "none", md: "flex" } }}>
-          {pages.map((page) => (
-            <Button key={page.name} color="inherit" component={Link} to={page.path}>
-              {page.name}
+          <Button color="inherit" component={Link} to={"/catalog"}>
+            Catalog
+          </Button>
+          {role === "admin" ? (
+            <Button color="inherit" component={Link} to={"/admin"}>
+              Admin Panel
             </Button>
-          ))}
+          ) : (
+            <></>
+          )}
         </Box>
         <IconButton>
           <ShoppingCartIcon />

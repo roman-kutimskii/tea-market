@@ -41,7 +41,7 @@ const DynamicForm = ({ request, path }: DynamicFormProps) => {
     }
 
     const { id, ...formDataNew } = formData;
-    
+
     try {
       const response = await fetch(path + request.path + (request.byId ? `/  ${id}` : ""), {
         method: request.type,

@@ -19,26 +19,26 @@ export type RegisterUser = {
 export type Item = {
   id: number;
   saleToItems: string[];
-}
+};
 
 export type SaleToItem = {
   id: number;
   quantity: number;
   item: Item;
   sale: string;
-}
+};
 
 export type Sale = {
   id: number;
   seller: string;
   saleToItems: SaleToItem[];
-}
+};
 
 export type RefreshToken = {
   id: number;
   token: string;
   user: string;
-  expiresAt: string; // ISO 8601 date string
+  expiresAt: string;
 };
 
 export type User = {
@@ -46,8 +46,14 @@ export type User = {
   email: string;
   passwordHash: string;
   role: string;
-  createdAt: string; // ISO 8601 date string
-  updatedAt: string; // ISO 8601 date string
+  createdAt: string;
+  updatedAt: string;
   sales: Sale[];
   refreshTokens: RefreshToken[];
-}
+};
+
+export type ErrorResponse = {
+  message: string;
+  error: string;
+  statusCode: number;
+};

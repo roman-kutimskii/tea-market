@@ -1,4 +1,4 @@
-import { RequestMethod, ApiResponse, CreateUser, User, RegisterUser } from "./Types";
+import { RequestMethod, ApiResponse, RegisterUser, ErrorResponse } from "./Types";
 
 const getAuthToken = () => {
   return localStorage.getItem("jwtToken");
@@ -29,18 +29,19 @@ const fetchWithAuth = async <T>(
         } catch (error) {
           console.error("Error refreshing token:", error);
           // todo redirect to login
-          if (window.location.pathname !== "auth/sign-in") {
-            window.location.href = "auth/sign-in";
+          if (window.location.pathname !== "/sign-up") {
+            window.location.href = "/sign-up";
             alert("Войдите в систему.");
           }
         }
       }
-      throw new Error(`HTTP error! status: ${String(response.status)}`);
+      const errorResponse: ErrorResponse = (await response.json()) as ErrorResponse;
+      throw new Error(errorResponse.message);
     }
     return await (response.json() as Promise<T>);
   } catch (error) {
     console.error(error);
-    throw new Error(`HTTP error! status: ${String(error)}`);
+    throw error;
   }
 };
 
@@ -49,8 +50,8 @@ const login = async (email: string, password: string) => {
   localStorage.setItem("jwtToken", tokens.access_token);
   localStorage.setItem("refreshToken", tokens.refresh_token);
 
-  const encodedRole = tokens.access_token.split(".")[1]; 
-  const decodedParams = Buffer.from(encodedRole, "base64").toString("utf-8");
+  const encodedRole = tokens.access_token.split(".")[1];
+  const decodedParams = atob(encodedRole);
 
   type UserToken = {
     sub: number;
@@ -58,11 +59,16 @@ const login = async (email: string, password: string) => {
     role: string;
     iat: number;
     exp: number;
-  }
+  };
 
   const decodedRole = (JSON.parse(decodedParams) as UserToken).role;
 
   localStorage.setItem("userRole", decodedRole);
+};
+
+const logout = () => {
+  localStorage.clear();
+  window.location.reload();
 };
 
 const refresh = async () => {
@@ -77,32 +83,44 @@ const refresh = async () => {
     if (response.status === 401) {
       localStorage.clear();
       // todo redirect to login
-      if (window.location.pathname !== "auth/sign-in") {
-        window.location.href = "auth/sign-in";
+      if (window.location.pathname !== "/sign-up") {
+        window.location.href = "/sign-up";
         alert("Войдите в систему.");
       }
     }
     throw new Error(`HTTP error! status: ${String(response.status)}`);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const newTokens: ApiResponse = await response.json();
+  const newTokens = (await response.json()) as ApiResponse;
 
   localStorage.setItem("jwtToken", newTokens.access_token);
   localStorage.setItem("refreshToken", newTokens.refresh_token);
 };
 
-const createUser = async (body: CreateUser): Promise<User> => {
-  return fetchWithAuth<User>("auth/sign-up", "POST", body);
-};
+const registerUser = async (body: RegisterUser) => {
+  const tokens = await fetchWithAuth<ApiResponse>("auth/sign-up", "POST", body);
+  localStorage.setItem("jwtToken", tokens.access_token);
+  localStorage.setItem("refreshToken", tokens.refresh_token);
 
-const registerUser = async (body: RegisterUser): Promise<User> => {
-  return fetchWithAuth<User>("auth/sign-up", "POST", body);
+  const encodedRole = tokens.access_token.split(".")[1];
+  const decodedParams = atob(encodedRole);
+
+  type UserToken = {
+    sub: number;
+    email: string;
+    role: string;
+    iat: number;
+    exp: number;
+  };
+
+  const decodedRole = (JSON.parse(decodedParams) as UserToken).role;
+
+  localStorage.setItem("userRole", decodedRole);
 };
 
 export const api = {
   fetchWithAuth,
   login,
-  createUser,
+  logout,
   registerUser,
 };

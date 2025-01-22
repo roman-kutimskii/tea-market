@@ -7,31 +7,32 @@ import MenuItem from "@mui/material/MenuItem";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import { useMenu } from "./hooks/useMenu";
-import { Link } from "react-router";
-import { useState } from "react";
+import { Link, useNavigate } from "react-router";
+import { useContext } from "react";
+import { api } from "../../utils/Api";
+import { AuthContext } from "../App/AppContext";
 
 const settings = [
-  { name: "Profile", path: "/profile" },
+  { name: "Профиль", path: "/profile" },
   { name: "Accout", path: "/account" },
 ];
 
 export const UserMenu = () => {
   const [anchorEl, handleOpenMenu, handleCloseMenu] = useMenu();
-  // TODO: Добавить логику входа
-  const [auth, setAuth] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSignIn = () => {
-    setAuth(true);
-  };
+  const authorization = useContext(AuthContext);
 
   const handleSignOut = () => {
     handleCloseMenu();
-    setAuth(false);
+    api.logout();
+    authorization.setAuth(false);
+    void navigate("/catalog");
   };
 
   return (
     <Box flexGrow={0}>
-      {auth ? (
+      {authorization.auth ? (
         <Tooltip title="Open settings">
           <IconButton onClick={handleOpenMenu} sx={{ p: 0 }}>
             <Avatar />
@@ -39,7 +40,7 @@ export const UserMenu = () => {
         </Tooltip>
       ) : (
         <Tooltip title="Sign In">
-          <IconButton onClick={handleSignIn}>
+          <IconButton component={Link} to="/signIn">
             <LoginIcon />
           </IconButton>
         </Tooltip>
@@ -59,7 +60,7 @@ export const UserMenu = () => {
           </MenuItem>
         ))}
         <MenuItem onClick={handleSignOut}>
-          <Typography sx={{ textAlign: "center" }}>Sign Out</Typography>
+          <Typography sx={{ textAlign: "center" }}>Выйти</Typography>
         </MenuItem>
       </Menu>
     </Box>
