@@ -39,7 +39,7 @@ export const UserMenu = () => {
         </Tooltip>
       ) : (
         <Tooltip title="Sign In">
-          <IconButton onClick={handleSignIn}>
+          <IconButton onClick={handleSignIn} color="inherit">
             <LoginIcon />
           </IconButton>
         </Tooltip>

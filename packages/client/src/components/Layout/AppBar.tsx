@@ -49,7 +49,7 @@ export const AppBar = () => {
             </Button>
           ))}
         </Box>
-        <IconButton>
+        <IconButton color="inherit">
           <ShoppingCartIcon />
         </IconButton>
         <UserMenu />
