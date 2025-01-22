@@ -1,5 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { compare, genSalt, hash } from 'bcrypt';
+import { compare } from 'bcrypt';
 import { UsersService } from 'src/users/users.service';
 import { SignUpDto } from './dto/sign-up.dto';
 import { SignInDto } from './dto/sign-in.dto';
@@ -9,6 +9,7 @@ import { Repository } from 'typeorm';
 import { RefreshToken } from './entities/refresh-token.entity';
 import { User } from 'src/users/entities/user.entity';
 import { v4 as uuidv4 } from 'uuid';
+import { Role } from './enums/role.enum';
 
 @Injectable()
 export class AuthService {
@@ -65,12 +66,10 @@ export class AuthService {
   }
 
   async signUp({ email, password }: SignUpDto): Promise<unknown> {
-    const salt = await genSalt();
-    const passwordHash = await hash(password, salt);
     const user = await this.usersService.create({
       email,
-      passwordHash,
-      role: 'customer',
+      password,
+      role: Role.Customer,
     });
     const payload = { sub: user.id, email, role: user.role };
     return {
