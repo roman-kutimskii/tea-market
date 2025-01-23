@@ -17,10 +17,12 @@ export class ItemsService {
     return this.itemsRepository.save(item);
   }
 
-  findAll(lastId?: number, limit?: number) {
+  async findAll(lastId?: number, limit?: number) {
     const query = this.itemsRepository
       .createQueryBuilder('item')
       .orderBy('item.id');
+
+    const count = await query.getCount();
 
     if (limit) {
       query.limit(limit);
@@ -30,7 +32,7 @@ export class ItemsService {
       query.where('item.id > :lastId', { lastId });
     }
 
-    return query.getMany();
+    return { items: await query.getMany(), count };
   }
 
   async findOne(id: number) {
