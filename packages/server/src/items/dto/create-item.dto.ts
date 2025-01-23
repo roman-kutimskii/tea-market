@@ -14,4 +14,24 @@ export class CreateItemDto {
 
   @IsNumber()
   price: number;
+
+  @IsNotEmpty()
+  @IsString()
+  type: string;
+
+  @IsNotEmpty()
+  @IsString()
+  originCountry: string;
+
+  @IsOptional()
+  @IsString()
+  region?: string;
+
+  @IsOptional()
+  @IsNumber()
+  harvestYear?: number;
+
+  @IsOptional()
+  @IsString()
+  manufacturer?: string;
 }
