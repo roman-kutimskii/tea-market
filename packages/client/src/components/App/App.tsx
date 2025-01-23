@@ -7,6 +7,7 @@ import SignInPage from "../Layout/Pages/AuthenticationPages/SignInPage";
 import AdminPanel from "../Layout/Pages/AdminPanel/AdminPanel";
 import { AppContext } from "./AppContext";
 import SignUpPage from "../Layout/Pages/AuthenticationPages/SignUpPage";
+import Catalog from "../Layout/Pages/Catalog/Catalog";
 
 function App() {
   useFavicon();
@@ -18,10 +19,10 @@ function App() {
         <Routes>
           <Route element={<Layout />}>
             <Route index element={<div>Index</div>} />
-            <Route path="catalog" element={<div>Catalog</div>} />
+            <Route path="catalog" element={<Catalog />} />
             <Route path="admin" element={<AdminPanel />} />
             <Route path="profile" element={<div>Profile</div>} />
-            <Route path="account" element={<div>Account</div>} />
+            <Route path="basket" element={<div>Account</div>} />
             <Route path="signIn" element={<SignInPage />} />
             <Route path="signUp" element={<SignUpPage />} />
           </Route>

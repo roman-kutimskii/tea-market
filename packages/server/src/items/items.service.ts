@@ -18,7 +18,7 @@ export class ItemsService {
   }
 
   async findAll(
-    lastId?: number,
+    page?: number,
     limit?: number,
     sortBy?: string,
     sortOrder?: 'ASC' | 'DESC',
@@ -39,8 +39,8 @@ export class ItemsService {
       query.limit(limit);
     }
 
-    if (lastId) {
-      query.andWhere('item.id > :lastId', { lastId });
+    if (page && limit) {
+      query.offset((page - 1) * limit);
     }
 
     return { items: await query.getMany(), count };
