@@ -17,10 +17,21 @@ export class ItemsService {
     return this.itemsRepository.save(item);
   }
 
-  async findAll(lastId?: number, limit?: number) {
+  async findAll(
+    lastId?: number,
+    limit?: number,
+    sortBy?: string,
+    sortOrder?: 'ASC' | 'DESC',
+    filterBy?: string,
+    filterValue?: string,
+  ) {
     const query = this.itemsRepository
       .createQueryBuilder('item')
-      .orderBy('item.id');
+      .orderBy(sortBy ? `item.${sortBy}` : 'item.id', sortOrder || 'ASC');
+
+    if (filterBy && filterValue) {
+      query.where(`item.${filterBy} = :filterValue`, { filterValue });
+    }
 
     const count = await query.getCount();
 
@@ -29,7 +40,7 @@ export class ItemsService {
     }
 
     if (lastId) {
-      query.where('item.id > :lastId', { lastId });
+      query.andWhere('item.id > :lastId', { lastId });
     }
 
     return { items: await query.getMany(), count };
