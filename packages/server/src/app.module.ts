@@ -7,6 +7,7 @@ import { ItemsModule } from './items/items.module';
 import { SalesModule } from './sales/sales.module';
 import { SaleToItemsModule } from './sale-to-items/sale-to-items.module';
 import { AuthModule } from './auth/auth.module';
+import { S3Module } from './s3/s3.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { AuthModule } from './auth/auth.module';
     SalesModule,
     SaleToItemsModule,
     AuthModule,
+    S3Module,
   ],
   controllers: [AppController],
   providers: [AppService],
