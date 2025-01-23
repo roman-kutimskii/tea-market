@@ -23,4 +23,19 @@ export class Item {
 
   @Column('tsvector', { select: false, nullable: true, name: 'search_vector' })
   searchVector: string;
+
+  @Column()
+  type: string;
+
+  @Column()
+  originCountry: string;
+
+  @Column({ nullable: true })
+  region: string;
+
+  @Column({ type: 'int', nullable: true })
+  harvestYear: number;
+
+  @Column({ nullable: true })
+  manufacturer: string;
 }
