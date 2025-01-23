@@ -31,8 +31,26 @@ export class ItemsController {
   @Get()
   @ApiQuery({ name: 'lastId', required: false })
   @ApiQuery({ name: 'limit', required: false })
-  findAll(@Query('lastId') lastId?: number, @Query('limit') limit?: number) {
-    return this.itemsService.findAll(lastId, limit);
+  @ApiQuery({ name: 'sortBy', required: false })
+  @ApiQuery({ name: 'sortOrder', required: false, enum: ['ASC', 'DESC'] })
+  @ApiQuery({ name: 'filterBy', required: false })
+  @ApiQuery({ name: 'filterValue', required: false })
+  findAll(
+    @Query('lastId') lastId?: number,
+    @Query('limit') limit?: number,
+    @Query('sortBy') sortBy?: string,
+    @Query('sortOrder') sortOrder?: 'ASC' | 'DESC',
+    @Query('filterBy') filterBy?: string,
+    @Query('filterValue') filterValue?: string,
+  ) {
+    return this.itemsService.findAll(
+      lastId,
+      limit,
+      sortBy,
+      sortOrder,
+      filterBy,
+      filterValue,
+    );
   }
 
   @Public()

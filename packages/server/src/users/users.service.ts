@@ -83,4 +83,13 @@ export class UsersService {
   remove(id: number) {
     return this.usersRepository.delete(id);
   }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- TODO: Добавить сохранение картинки
+  async updateAvatar(id: number, avatarBase64: string) {
+    const user = await this.findOne(id);
+    // TODO: Добавить сохранение картинки
+    const avatarUrl = 'https://cataas.com/cat';
+    user.avatarUrl = avatarUrl;
+    return this.usersRepository.save(user);
+  }
 }

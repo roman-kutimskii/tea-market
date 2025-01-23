@@ -14,7 +14,11 @@ class SaleItemDto {
 export class CreateSaleDto {
   @IsInt()
   @IsPositive()
-  sellerId: number;
+  sellerId?: number;
+
+  @IsInt()
+  @IsPositive()
+  customerId: number;
 
   @IsArray()
   @ValidateNested({ each: true })

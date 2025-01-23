@@ -9,6 +9,15 @@ export class Item {
   @Column()
   name: string;
 
+  @Column({ nullable: true })
+  imageUrl: string;
+
+  @Column({ nullable: true })
+  description: string;
+
+  @Column('money')
+  price: number;
+
   @OneToMany(() => SaleToItem, (saleToItem) => saleToItem.item)
   saleToItems: SaleToItem[];
 
