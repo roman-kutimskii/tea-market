@@ -7,8 +7,11 @@ export class Sale {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, (seller) => seller.sales)
-  seller: User;
+  @ManyToOne(() => User, (seller) => seller.sellerSales, { nullable: true })
+  seller?: User;
+
+  @ManyToOne(() => User, (customer) => customer.customerSales)
+  customer: User;
 
   @OneToMany(() => SaleToItem, (saleToItem) => saleToItem.sale, {
     cascade: ['remove'],

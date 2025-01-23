@@ -29,8 +29,11 @@ export class User {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
-  @OneToMany(() => Sale, (sale) => sale.seller)
-  sales: Sale[];
+  @OneToMany(() => Sale, (sale) => sale.seller, { nullable: true })
+  sellerSales?: Sale[];
+
+  @OneToMany(() => Sale, (sale) => sale.customer)
+  customerSales: Sale[];
 
   @OneToMany(() => RefreshToken, (refreshToken) => refreshToken.user)
   refreshTokens: RefreshToken[];

@@ -8,6 +8,7 @@ import { SaleToItem } from 'src/sale-to-items/entities/sale-to-item.entity';
 import { EntityNotFoundError } from 'typeorm/error/EntityNotFoundError';
 import { UsersService } from 'src/users/users.service';
 import { ItemsService } from 'src/items/items.service';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class SalesService {
@@ -25,8 +26,15 @@ export class SalesService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      const seller = await this.usersService.findOne(createSaleDto.sellerId);
-      const sale = queryRunner.manager.create(Sale, { seller });
+      let seller: User | undefined;
+      if (createSaleDto.sellerId) {
+        seller = await this.usersService.findOne(createSaleDto.sellerId);
+      }
+      const customer = await this.usersService.findOne(
+        createSaleDto.customerId,
+      );
+
+      const sale = queryRunner.manager.create(Sale, { seller, customer });
       const savedSale = await queryRunner.manager.save(Sale, sale);
 
       const saleToItems = [];
