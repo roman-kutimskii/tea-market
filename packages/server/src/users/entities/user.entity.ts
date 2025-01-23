@@ -23,6 +23,9 @@ export class User {
   @Column()
   role: string;
 
+  @Column({ nullable: true })
+  avatarUrl: string;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
@@ -30,7 +33,7 @@ export class User {
   updatedAt: Date;
 
   @OneToMany(() => Sale, (sale) => sale.seller, { nullable: true })
-  sellerSales?: Sale[];
+  sellerSales: Sale[];
 
   @OneToMany(() => Sale, (sale) => sale.customer)
   customerSales: Sale[];

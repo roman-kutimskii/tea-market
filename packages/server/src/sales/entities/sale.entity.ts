@@ -8,7 +8,7 @@ export class Sale {
   id: number;
 
   @ManyToOne(() => User, (seller) => seller.sellerSales, { nullable: true })
-  seller?: User;
+  seller: User;
 
   @ManyToOne(() => User, (customer) => customer.customerSales)
   customer: User;

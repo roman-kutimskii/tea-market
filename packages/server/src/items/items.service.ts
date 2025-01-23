@@ -66,8 +66,14 @@ export class ItemsService {
   }
 
   async update(id: number, updateItemDto: UpdateItemDto) {
+    const { imageBase64, ...data } = updateItemDto;
+    let imageUrl: string | undefined;
+    if (imageBase64) {
+      // TODO: Добавить сохранение картинки
+      imageUrl = 'https://cataas.com/cat';
+    }
     const item = await this.findOne(id);
-    Object.assign(item, updateItemDto);
+    Object.assign(item, { imageUrl, ...data });
     return this.itemsRepository.save(item);
   }
 

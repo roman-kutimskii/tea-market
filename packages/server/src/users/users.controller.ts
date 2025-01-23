@@ -40,6 +40,14 @@ export class UsersController {
     return this.usersService.update(+id, updateUserDto);
   }
 
+  @Patch(':id/avatar')
+  async updateAvatar(
+    @Param('id') id: number,
+    @Body('avatarBase64') avatarBase64: string,
+  ) {
+    return this.usersService.updateAvatar(id, avatarBase64);
+  }
+
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);
