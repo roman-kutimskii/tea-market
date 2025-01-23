@@ -1,9 +1,26 @@
 import { AppBar, Box, Tab, Tabs, Toolbar, Typography } from "@mui/material";
 import EntityBlock, { RequestInfoBlockGroup } from "./EntityBlock/EntityBlock";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import "./AdminPanel.css";
+import { AuthContext } from "../../../App/AppContext";
+import { useNavigate } from "react-router";
 
 const AdminPanel = () => {
+  const authorization = useContext(AuthContext);
+  const [role, setRole] = useState<string>(String(localStorage.getItem("userRole")));
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    setRole(String(localStorage.getItem("userRole")));
+  }, [authorization.auth]);
+
+  useEffect(() => {
+    if (role !== "admin" || !authorization.auth) {
+      void navigate("/catalog");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authorization.auth]);
+
   const requestsGroups: RequestInfoBlockGroup[] = [
     {
       text: "Пользователи",
@@ -89,7 +106,7 @@ const AdminPanel = () => {
       <Typography variant="h4" gutterBottom>
         Страница администратора
       </Typography>
-      <AppBar style={{ top: "70px" }} className="app-bar" position="sticky" color="default">
+      <AppBar className="app-bar" position="sticky" color="default">
         <Toolbar>
           <Tabs value={selectedTab} onChange={handleTabChange}>
             {requestsGroups.map((group, index) => (
