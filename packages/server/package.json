@@ -23,6 +23,7 @@
     "migration:revert": "typeorm migration:revert -d dist/config/data-sourcejts"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.733.0",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.3.0",
     "@nestjs/core": "^10.0.0",
