@@ -7,6 +7,7 @@ import { ItemsModule } from './items/items.module';
 import { SalesModule } from './sales/sales.module';
 import { SaleToItemsModule } from './sale-to-items/sale-to-items.module';
 import { AuthModule } from './auth/auth.module';
+import { S3Service } from './s3/s3.service';
 
 @Module({
   imports: [
@@ -18,6 +19,6 @@ import { AuthModule } from './auth/auth.module';
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, S3Service],
 })
 export class AppModule {}
