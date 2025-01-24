@@ -82,7 +82,7 @@ const AdminPanel = () => {
     },
     {
       text: "Товары",
-      path: "tea-market/api/items",
+      path: "/api/items",
       requests: [
         {
           type: "GET",
