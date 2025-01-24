@@ -24,12 +24,10 @@ const SignInPage = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      await api.login(email, password);
-      authorization.setAuth(!!localStorage.getItem("jwtToken"));
+      await api.login(authorization.setAuth, navigate, email, password);
       await navigate("/catalog");
     } catch (error) {
       console.error(error);
-      authorization.setAuth(false);
       const errorMessage = (error as { message: string }).message;
       if (errorMessage === `Could not find any entity of type "User" matching: {\n    "email": "${email}"\n}`) {
         setErrorText("Аккаунт с таким email не найден");
@@ -71,12 +69,7 @@ const SignInPage = () => {
         <Box mt={2}>
           <Typography variant="body2">
             Нет аккаунта?{" "}
-            <Typography
-              component={RouterLink}
-              to="/signUp"
-              style={{ color: "primary" }}
-              color="primary"
-            >
+            <Typography component={RouterLink} to="/signUp" style={{ color: "primary" }} color="primary">
               Зарегистрироваться
             </Typography>
           </Typography>

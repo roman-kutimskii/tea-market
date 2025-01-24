@@ -13,13 +13,13 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-import { ItemsContext } from "../../../../App/AppContext";
+import { BasketItem, ItemsContext } from "../../../../App/AppContext";
 
 export type Item = {
   id: number;
   name: string;
   description: string;
-  price: string;
+  price: number;
   imageUrl: string;
   type: string;
   originCountry: string;
@@ -29,12 +29,12 @@ export type Item = {
 };
 
 type ItemCardProps = {
-  item: Item;
+  basketItem: BasketItem;
 };
 
-const ItemCard = ({ item }: ItemCardProps) => {
-  const [cart, setCart] = useState<Record<number, number>>({});
+const ItemCard = ({ basketItem }: ItemCardProps) => {
   const { setItems } = useContext(ItemsContext);
+  const [count, setCount] = useState(basketItem.quantity);
   const [open, setOpen] = useState(false);
 
   const handleCardClick = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -48,34 +48,22 @@ const ItemCard = ({ item }: ItemCardProps) => {
   };
 
   const handleAddToCart = (itemId: number) => {
-    setCart((prevCart) => ({
-      ...prevCart,
-      [itemId]: (prevCart[itemId] || 0) + 1,
-    }));
-
+    setCount((prevCount) => ++prevCount);
     setItems((prevItems) => {
-      const itemExists = prevItems.some((item) => item.id === itemId);
+      const itemExists = prevItems.some((item) => item.item.id === itemId);
       if (itemExists) {
-        return prevItems.map((item) => (item.id === itemId ? { ...item, quantity: item.quantity + 1 } : item));
+        return prevItems.map((item) => (item.item.id === itemId ? { ...item, quantity: item.quantity + 1 } : item));
       } else {
-        return [...prevItems, { id: itemId, quantity: 1 }];
+        return [...prevItems, { item: basketItem.item, quantity: basketItem.quantity + 1 }];
       }
     });
   };
 
   const handleRemoveFromCart = (itemId: number) => {
-    setCart((prevCart) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { [itemId]: unused, ...newCart } = prevCart;
-      if (prevCart[itemId] > 1) {
-        return { ...newCart, [itemId]: prevCart[itemId] - 1 };
-      }
-      return newCart;
-    });
-
+    setCount((prevCount) => (prevCount > 0 ? --prevCount : 0));
     setItems((prevItems) =>
       prevItems
-        .map((item) => (item.id === itemId && item.quantity > 0 ? { ...item, quantity: item.quantity - 1 } : item))
+        .map((item) => (item.item.id === itemId && item.quantity > 0 ? { ...item, quantity: item.quantity - 1 } : item))
         .filter((item) => item.quantity > 0),
     );
   };
@@ -84,40 +72,40 @@ const ItemCard = ({ item }: ItemCardProps) => {
     <>
       <Box width="calc(33.333% - 11px)" boxSizing="border-box">
         <Card sx={{ display: "flex", flexDirection: "column", height: "100%" }} onClick={handleCardClick}>
-          <CardMedia component="img" height="140" image={item.imageUrl} alt={item.name} />
+          <CardMedia component="img" height="140" image={basketItem.item.imageUrl} alt={basketItem.item.name} />
           <CardContent sx={{ flexGrow: 1 }}>
             <Typography variant="h5" color="primary">
-              {item.name}
+              {basketItem.item.name}
             </Typography>
             <Typography variant="body2" color="textSecondary">
-              {item.description}
+              {basketItem.item.description}
             </Typography>
             <Typography variant="h6" color="secondary">
-              {item.price.replace(/[?]/g, "")} ₽
+              {basketItem.item.price} ₽
             </Typography>
             <Typography variant="body2" color="textSecondary">
-              {item.type}
+              {basketItem.item.type}
             </Typography>
             <Typography variant="h6" color="primary">
-              {`${item.originCountry} - ${item.region} - ${item.manufacturer} : ${String(item.harvestYear)}`}
+              {`${basketItem.item.originCountry} - ${basketItem.item.region} - ${basketItem.item.manufacturer} : ${String(basketItem.item.harvestYear)}`}
             </Typography>
           </CardContent>
-          {cart[item.id] ? (
+          {count > 0 ? (
             <Box display="flex" alignItems="center" justifyContent="center" sx={{ marginBottom: 1 }}>
               <IconButton
                 onClick={() => {
-                  handleRemoveFromCart(item.id);
+                  handleRemoveFromCart(basketItem.item.id);
                 }}
                 color="primary"
               >
                 <RemoveIcon />
               </IconButton>
               <Typography variant="body1" sx={{ margin: "0 8px" }}>
-                {cart[item.id]}
+                {count}
               </Typography>
               <IconButton
                 onClick={() => {
-                  handleAddToCart(item.id);
+                  handleAddToCart(basketItem.item.id);
                 }}
                 color="primary"
               >
@@ -130,7 +118,7 @@ const ItemCard = ({ item }: ItemCardProps) => {
               color="primary"
               sx={{ margin: 1 }}
               onClick={() => {
-                handleAddToCart(item.id);
+                handleAddToCart(basketItem.item.id);
               }}
             >
               Добавить в корзину
@@ -152,22 +140,62 @@ const ItemCard = ({ item }: ItemCardProps) => {
           },
         }}
       >
-        <DialogTitle>{`Название: ${item.name}`}</DialogTitle>
+        <DialogTitle>{`Название: ${basketItem.item.name}`}</DialogTitle>
         <DialogContent>
-          <CardMedia component="img" image={item.imageUrl} alt={item.name} sx={{ marginBottom: 1 }} />
-          <Typography variant="body1">{`Описание: ${item.description}`}</Typography>
+          <CardMedia
+            component="img"
+            image={basketItem.item.imageUrl}
+            alt={basketItem.item.name}
+            sx={{ marginBottom: 1 }}
+          />
+          <Typography variant="body1">{`Описание: ${basketItem.item.description}`}</Typography>
           <Typography variant="body2" color="textSecondary">
-            {`Тип товара: ${item.type}`}
+            {`Тип товара: ${basketItem.item.type}`}
           </Typography>
           <Typography variant="h6" color="primary" sx={{ marginBottom: 1 }}>
-            {`Цена за грамм: ${item.price.replace(/[?]/g, "")} ₽`}
+            {`Цена за грамм: ${String(basketItem.item.price)} ₽`}
           </Typography>
           <Typography variant="body2" color="textSecondary">
-            {`${item.originCountry} - ${item.region} - ${item.manufacturer} : ${String(item.harvestYear)}`}
+            {`${basketItem.item.originCountry} - ${basketItem.item.region} - ${basketItem.item.manufacturer} : ${String(basketItem.item.harvestYear)}`}
           </Typography>
           <Typography variant="body2" color="textSecondary">
-            {`Урожай: ${String(item.harvestYear)} года`}
+            {`Урожай: ${String(basketItem.item.harvestYear)} года`}
           </Typography>
+          {count > 0 ? (
+            <Box display="flex" alignItems="center" justifyContent="center" sx={{ marginBottom: 1 }}>
+              <IconButton
+                onClick={() => {
+                  handleRemoveFromCart(basketItem.item.id);
+                }}
+                color="primary"
+              >
+                <RemoveIcon />
+              </IconButton>
+              <Typography variant="body1" sx={{ margin: "0 8px" }}>
+                {count}
+              </Typography>
+              <IconButton
+                onClick={() => {
+                  handleAddToCart(basketItem.item.id);
+                }}
+                color="primary"
+              >
+                <AddIcon />
+              </IconButton>
+            </Box>
+          ) : (
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              sx={{ margin: 1 }}
+              onClick={() => {
+                handleAddToCart(basketItem.item.id);
+              }}
+            >
+              Добавить в корзину
+            </Button>
+          )}
         </DialogContent>
       </Dialog>
     </>

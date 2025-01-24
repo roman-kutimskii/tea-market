@@ -25,7 +25,7 @@ const SignUpPage = () => {
     event.preventDefault();
     try {
       setErrorText("");
-      await api.registerUser({ email, password });
+      await api.registerUser(navigate, { email, password });
       authorization.setAuth(!!localStorage.getItem("jwtToken"));
       await navigate("/catalog");
     } catch (error) {
