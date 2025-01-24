@@ -78,6 +78,20 @@ export class SalesService {
     }
   }
 
+  async findByCustomerId(customerId: number) {
+    return this.salesRepository.find({
+      where: [{ customer: { id: customerId } }],
+      relations: ['saleToItems', 'seller', 'customer'],
+    });
+  }
+
+  async findBySellerId(sellerId: number) {
+    return this.salesRepository.find({
+      where: [{ seller: { id: sellerId } }],
+      relations: ['saleToItems', 'seller', 'customer'],
+    });
+  }
+
   async update(id: number, updateSaleDto: UpdateSaleDto) {
     const queryRunner = this.dataSource.createQueryRunner();
 
