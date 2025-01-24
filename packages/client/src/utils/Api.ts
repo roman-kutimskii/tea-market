@@ -18,7 +18,6 @@ const fetchWithAuth = async <T>(
     "Content-Type": "application/json",
   };
   try {
-    debugger;
     const response = await fetch(`/api/${endpoint}`, {
       method: method,
       headers,
