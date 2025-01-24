@@ -74,27 +74,30 @@ const Catalog = () => {
         return;
       }
       try {
-        const parameters = `?search=${search}`;
-
-        const response = await api.fetchWithoutAuth<GetItemsType>("items" + parameters, "GET");
+        const parameters = `?query=${search}`;
+        const response = await api.fetchWithoutAuth<GetItemsType>("items/search" + parameters, "GET");
         setItems(() => {
           const existingItemsMap = new Map(basketItems.items.map((item) => [item.item.id, item]));
 
-          const mergedItems = response.items
-            .map((item) => {
-              if (!existingItemsMap.has(item.id)) {
-                return {
-                  item: {
-                    ...item,
-                    price: Number(item.price.replace(/[\s,?]/g, "")) / 100,
-                  },
-                  quantity: 0,
-                };
-              } else {
-                return existingItemsMap.get(item.id);
-              }
-            })
-            .filter((item): item is BasketItem => item !== undefined);
+          const mergedItems =
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            response.items && response.items.length > 0
+              ? response.items
+                  .map((item) => {
+                    if (!existingItemsMap.has(item.id)) {
+                      return {
+                        item: {
+                          ...item,
+                          price: Number(item.price.replace(/[\s,?]/g, "")) / 100,
+                        },
+                        quantity: 0,
+                      };
+                    } else {
+                      return existingItemsMap.get(item.id);
+                    }
+                  })
+                  .filter((item): item is BasketItem => item !== undefined)
+              : [];
 
           return mergedItems;
         });
