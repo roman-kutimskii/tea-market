@@ -16,7 +16,7 @@ const fetchWithAuth = async <T>(
   };
 
   try {
-    const response = await fetch(`/api/${endpoint}`, {
+    const response = await fetch(`/tea-market/api/${endpoint}`, {
       method: method,
       headers,
       body: JSON.stringify(body),
@@ -74,7 +74,7 @@ const logout = () => {
 const refresh = async () => {
   const refreshToken = localStorage.getItem("refresh_token");
 
-  const response = await fetch(`/api/auth/refresh-token`, {
+  const response = await fetch(`/tea-market/api/auth/refresh-token`, {
     method: "POST",
     body: JSON.stringify({ refreshToken }),
   });
@@ -124,7 +124,7 @@ const fetchWithoutAuth = async <T>(
   body?: Record<string, unknown>,
 ): Promise<T> => {
   try {
-    const response = await fetch(`/api/${endpoint}`, {
+    const response = await fetch(`/tea-market/api/${endpoint}`, {
       method: method,
       headers: {
         "Content-Type": "application/json",
