@@ -24,7 +24,7 @@ const AdminPanel = () => {
   const requestsGroups: RequestInfoBlockGroup[] = [
     {
       text: "Пользователи",
-      path: "/api/users",
+      path: "/tea-market/api/users",
       requests: [
         {
           type: "GET",
@@ -82,7 +82,7 @@ const AdminPanel = () => {
     },
     {
       text: "Товары",
-      path: "/api/items",
+      path: "/tea-market/api/items",
       requests: [
         {
           type: "GET",
