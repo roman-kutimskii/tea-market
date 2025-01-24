@@ -29,8 +29,8 @@ const fetchWithAuth = async <T>(
         } catch (error) {
           console.error("Error refreshing token:", error);
           // todo redirect to login
-          if (window.location.pathname !== "/sign-up") {
-            window.location.href = "/sign-up";
+          if (window.location.pathname !== "/tea-market/signUp") {
+            window.location.href = "/tea-market/signUp";
             alert("Войдите в систему.");
           }
         }
@@ -74,7 +74,7 @@ const logout = () => {
 const refresh = async () => {
   const refreshToken = localStorage.getItem("refresh_token");
 
-  const response = await fetch(`tea-market/api/refresh-token`, {
+  const response = await fetch(`/api/auth/refresh-token`, {
     method: "POST",
     body: JSON.stringify({ refreshToken }),
   });
@@ -83,8 +83,8 @@ const refresh = async () => {
     if (response.status === 401) {
       localStorage.clear();
       // todo redirect to login
-      if (window.location.pathname !== "/sign-up") {
-        window.location.href = "/sign-up";
+      if (window.location.pathname !== "/tea-market/signUp") {
+        window.location.href = "/tea-market/signUp";
         alert("Войдите в систему.");
       }
     }
