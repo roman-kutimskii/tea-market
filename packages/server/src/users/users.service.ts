@@ -10,6 +10,8 @@ import { DataSource, Repository } from 'typeorm';
 import { EntityNotFoundError } from 'typeorm/error/EntityNotFoundError';
 import { genSalt, hash } from 'bcryptjs';
 import { CreateUserDto } from './dto/create-user.dto';
+import { S3Service } from 'src/s3/s3.service';
+import { UpdateAvatarDto } from './dto/update-avatar.dto';
 
 @Injectable()
 export class UsersService {
@@ -17,6 +19,7 @@ export class UsersService {
     @InjectRepository(User)
     private usersRepository: Repository<User>,
     private dataSource: DataSource,
+    private s3Service: S3Service,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -84,11 +87,10 @@ export class UsersService {
     return this.usersRepository.delete(id);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- TODO: Добавить сохранение картинки
-  async updateAvatar(id: number, avatarBase64: string) {
+  async updateAvatar(id: number, updateAvatarDto: UpdateAvatarDto) {
+    const { avatarBase64 } = updateAvatarDto;
     const user = await this.findOne(id);
-    // TODO: Добавить сохранение картинки
-    const avatarUrl = 'https://cataas.com/cat';
+    const avatarUrl = await this.s3Service.uploadBase64Image(avatarBase64);
     user.avatarUrl = avatarUrl;
     return this.usersRepository.save(user);
   }

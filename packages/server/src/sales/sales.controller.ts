@@ -36,6 +36,16 @@ export class SalesController {
     return this.salesService.findOne(+id);
   }
 
+  @Get('customer/:customerId')
+  findByCustomerId(@Param('customerId') customerId: string) {
+    return this.salesService.findByCustomerId(+customerId);
+  }
+
+  @Get('seller/:sellerId')
+  findBySellerId(@Param('sellerId') sellerId: string) {
+    return this.salesService.findBySellerId(+sellerId);
+  }
+
   @Roles(Role.Seller, Role.Admin)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateSaleDto: UpdateSaleDto) {

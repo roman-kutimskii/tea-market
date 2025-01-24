@@ -13,6 +13,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/auth/enums/role.enum';
+import { UpdateAvatarDto } from './dto/update-avatar.dto';
 
 @ApiBearerAuth()
 @Controller('users')
@@ -46,9 +47,9 @@ export class UsersController {
   @Patch(':id/avatar')
   async updateAvatar(
     @Param('id') id: number,
-    @Body('avatarBase64') avatarBase64: string,
+    @Body() updateAvatarDto: UpdateAvatarDto,
   ) {
-    return this.usersService.updateAvatar(id, avatarBase64);
+    return this.usersService.updateAvatar(id, updateAvatarDto);
   }
 
   @Roles(Role.Admin)
