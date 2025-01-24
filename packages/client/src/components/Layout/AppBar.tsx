@@ -12,7 +12,8 @@ import { Link } from "react-router";
 import { UserMenu } from "./UserMenu";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { useContext, useState, useEffect } from "react";
-import { AuthContext } from "../App/AppContext";
+import { AuthContext, ItemsContext } from "../App/AppContext";
+import { Badge } from "@mui/material";
 
 const pages = [
   { name: "Catalog", path: "/catalog" },
@@ -24,6 +25,7 @@ export const AppBar = () => {
   const mobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const authorization = useContext(AuthContext);
+  const { items } = useContext(ItemsContext);
   const [role, setRole] = useState<string>(String(localStorage.getItem("userRole")));
 
   useEffect(() => {
@@ -53,18 +55,20 @@ export const AppBar = () => {
         </Typography>
         <Box flexGrow={1} sx={{ display: { xs: "none", md: "flex" } }}>
           <Button color="inherit" component={Link} to={"/catalog"}>
-            Catalog
+            Каталог
           </Button>
           {role === "admin" ? (
             <Button color="inherit" component={Link} to={"/admin"}>
-              Admin Panel
+              Страница администратора
             </Button>
           ) : (
             <></>
           )}
         </Box>
-        <IconButton color="inherit">
-          <ShoppingCartIcon />
+        <IconButton sx={{ marginRight: 1 }} color="inherit" component={Link} to={"/basket"} aria-label="cart">
+          <Badge badgeContent={items.length} color="primary">
+            <ShoppingCartIcon />
+          </Badge>
         </IconButton>
         <UserMenu />
       </Toolbar>

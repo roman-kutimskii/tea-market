@@ -118,8 +118,33 @@ const registerUser = async (body: RegisterUser) => {
   localStorage.setItem("userRole", decodedRole);
 };
 
+const fetchWithoutAuth = async <T>(
+  endpoint: string,
+  method: RequestMethod,
+  body?: Record<string, unknown>,
+): Promise<T> => {
+  try {
+    const response = await fetch(`/api/${endpoint}`, {
+      method: method,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: body ? JSON.stringify(body) : undefined,
+    });
+    if (!response.ok) {
+      const errorResponse: ErrorResponse = (await response.json()) as ErrorResponse;
+      throw new Error(errorResponse.message);
+    }
+    return await (response.json() as Promise<T>);
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 export const api = {
   fetchWithAuth,
+  fetchWithoutAuth,
   login,
   logout,
   registerUser,
