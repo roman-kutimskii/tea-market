@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router";
 import { RequestMethod, ApiResponse, RegisterUser, ErrorResponse } from "./Types";
 
 const getAuthToken = () => {
@@ -5,16 +6,17 @@ const getAuthToken = () => {
 };
 
 const fetchWithAuth = async <T>(
+  setAuth: React.Dispatch<React.SetStateAction<boolean>>,
+  navigate: ReturnType<typeof useNavigate>,
   endpoint: string,
   method: RequestMethod,
-  body: Record<string, unknown> = {},
+  body?: Record<string, unknown>,
 ): Promise<T> => {
   const token = getAuthToken();
   const headers = {
     Authorization: token ? `Bearer ${token}` : "",
     "Content-Type": "application/json",
   };
-
   try {
     const response = await fetch(`/tea-market/api/${endpoint}`, {
       method: method,
@@ -24,14 +26,13 @@ const fetchWithAuth = async <T>(
     if (!response.ok) {
       if (response.status === 401) {
         try {
-          await refresh();
-          return await fetchWithAuth(endpoint, method, body);
+          await refresh(setAuth, navigate);
+          return await fetchWithAuth(setAuth, navigate, endpoint, method, body);
         } catch (error) {
           console.error("Error refreshing token:", error);
-          // todo redirect to login
-          if (window.location.pathname !== "/tea-market/signUp") {
-            window.location.href = "/tea-market/signUp";
-            alert("Войдите в систему.");
+
+          if (window.location.pathname !== "/signIn") {
+            await navigate("/signIn");
           }
         }
       }
@@ -45,8 +46,14 @@ const fetchWithAuth = async <T>(
   }
 };
 
-const login = async (email: string, password: string) => {
-  const tokens = await fetchWithAuth<ApiResponse>("auth/sign-in", "POST", { email, password });
+const login = async (
+  setAuth: React.Dispatch<React.SetStateAction<boolean>>,
+  navigate: ReturnType<typeof useNavigate>,
+  email: string,
+  password: string,
+) => {
+  const tokens = await fetchWithAuth<ApiResponse>(setAuth, navigate, "auth/sign-in", "POST", { email, password });
+  setAuth(true);
   localStorage.setItem("jwtToken", tokens.access_token);
   localStorage.setItem("refreshToken", tokens.refresh_token);
 
@@ -61,9 +68,12 @@ const login = async (email: string, password: string) => {
     exp: number;
   };
 
-  const decodedRole = (JSON.parse(decodedParams) as UserToken).role;
+  const decodedData = JSON.parse(decodedParams) as UserToken;
+  const userRole = decodedData.role;
+  const userId = String(decodedData.sub);
 
-  localStorage.setItem("userRole", decodedRole);
+  localStorage.setItem("userRole", userRole);
+  localStorage.setItem("userId", userId);
 };
 
 const logout = () => {
@@ -71,7 +81,10 @@ const logout = () => {
   window.location.reload();
 };
 
-const refresh = async () => {
+const refresh = async (
+  setAuth: React.Dispatch<React.SetStateAction<boolean>>,
+  navigate: ReturnType<typeof useNavigate>,
+) => {
   const refreshToken = localStorage.getItem("refresh_token");
 
   const response = await fetch(`/tea-market/api/auth/refresh-token`, {
@@ -80,12 +93,11 @@ const refresh = async () => {
   });
 
   if (!response.ok) {
+    logout();
+    setAuth(false);
     if (response.status === 401) {
-      localStorage.clear();
-      // todo redirect to login
-      if (window.location.pathname !== "/tea-market/signUp") {
-        window.location.href = "/tea-market/signUp";
-        alert("Войдите в систему.");
+      if (window.location.pathname !== "/signIn") {
+        await navigate("/signIn");
       }
     }
     throw new Error(`HTTP error! status: ${String(response.status)}`);
@@ -97,8 +109,12 @@ const refresh = async () => {
   localStorage.setItem("refreshToken", newTokens.refresh_token);
 };
 
-const registerUser = async (body: RegisterUser) => {
-  const tokens = await fetchWithAuth<ApiResponse>("auth/sign-up", "POST", body);
+const registerUser = async (
+  setAuth: React.Dispatch<React.SetStateAction<boolean>>,
+  navigate: ReturnType<typeof useNavigate>,
+  body: RegisterUser,
+) => {
+  const tokens = await fetchWithAuth<ApiResponse>(setAuth, navigate, "auth/sign-up", "POST", body);
   localStorage.setItem("jwtToken", tokens.access_token);
   localStorage.setItem("refreshToken", tokens.refresh_token);
 

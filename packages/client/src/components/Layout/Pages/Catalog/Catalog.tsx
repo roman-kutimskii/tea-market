@@ -1,15 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Container, TextField, Select, MenuItem, Pagination, Box, Typography, SelectChangeEvent } from "@mui/material";
 import ItemCard, { Item } from "./ItemCard.tsx/ItemCard";
 import { api } from "../../../../utils/Api";
+import { BasketItem, ItemsContext } from "../../../App/AppContext";
+
+type ResponceItemType = Omit<Item, "price"> & { price: string };
 
 type GetItemsType = {
-  items: Item[];
+  items: ResponceItemType[];
   count: number;
 };
 
 const Catalog = () => {
-  const [items, setItems] = useState<Item[]>([]);
+  const basketItems = useContext(ItemsContext);
+  const [items, setItems] = useState<BasketItem[]>(basketItems.items);
   const [limit, setLimit] = useState(5);
   const [sortBy, setSortBy] = useState("harvestYear");
   const [sortOrder, setSortOrder] = useState("");
@@ -34,7 +38,27 @@ const Catalog = () => {
         parameters = parameters.slice(0, -1);
 
         const response = await api.fetchWithoutAuth<GetItemsType>("items" + parameters, "GET");
-        setItems(response.items);
+        setItems(() => {
+          const existingItemsMap = new Map(basketItems.items.map((item) => [item.item.id, item]));
+
+          const mergedItems = response.items
+            .map((item) => {
+              if (!existingItemsMap.has(item.id)) {
+                return {
+                  item: {
+                    ...item,
+                    price: Number(item.price.replace(/[\s,?]/g, "")) / 100,
+                  },
+                  quantity: 0,
+                };
+              } else {
+                return existingItemsMap.get(item.id);
+              }
+            })
+            .filter((item): item is BasketItem => item !== undefined);
+
+          return mergedItems;
+        });
         setTotalPages(response.count > 0 ? Math.ceil(response.count / limit) : 1);
       } catch (error) {
         console.error("Failed to fetch items:", error);
@@ -50,10 +74,33 @@ const Catalog = () => {
         return;
       }
       try {
-        const parameters = `?search=${search}`;
+        const parameters = `?query=${search}`;
+        const response = await api.fetchWithoutAuth<GetItemsType>("items/search" + parameters, "GET");
+        setItems(() => {
+          const existingItemsMap = new Map(basketItems.items.map((item) => [item.item.id, item]));
 
-        const response = await api.fetchWithoutAuth<GetItemsType>("items" + parameters, "GET");
-        setItems(response.items);
+          const mergedItems =
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            response.items && response.items.length > 0
+              ? response.items
+                  .map((item) => {
+                    if (!existingItemsMap.has(item.id)) {
+                      return {
+                        item: {
+                          ...item,
+                          price: Number(item.price.replace(/[\s,?]/g, "")) / 100,
+                        },
+                        quantity: 0,
+                      };
+                    } else {
+                      return existingItemsMap.get(item.id);
+                    }
+                  })
+                  .filter((item): item is BasketItem => item !== undefined)
+              : [];
+
+          return mergedItems;
+        });
         setTotalPages(response.count > 0 ? Math.ceil(response.count / limit) : 1);
       } catch (error) {
         console.error("Failed to fetch items:", error);
@@ -229,7 +276,7 @@ const Catalog = () => {
       </Box>
       <Box display="flex" flexWrap="wrap" gap={2} justifyContent="flex-start">
         {items.map((item) => (
-          <ItemCard key={item.id} item={item} />
+          <ItemCard key={item.item.id} basketItem={item} />
         ))}
       </Box>
       <Pagination

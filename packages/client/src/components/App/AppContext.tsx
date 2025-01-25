@@ -1,15 +1,16 @@
 import React, { createContext, useState, ReactNode } from "react";
+import { Item } from "../Layout/Pages/Catalog/ItemCard.tsx/ItemCard";
 
 type AuthContextType = {
   auth: boolean;
   setAuth: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-type Item = { id: number; quantity: number };
+export type BasketItem = { item: Item; quantity: number };
 
 type ItemStorageContextType = {
-  items: Item[];
-  setItems: React.Dispatch<React.SetStateAction<Item[]>>;
+  items: BasketItem[];
+  setItems: React.Dispatch<React.SetStateAction<BasketItem[]>>;
 };
 
 const ItemsContext = createContext<ItemStorageContextType>({ items: [], setItems: () => <></> });
@@ -21,7 +22,7 @@ type AppContextProps = {
 
 const AppContext: React.FC<AppContextProps> = ({ children }) => {
   const [auth, setAuth] = useState<boolean>(!!localStorage.getItem("jwtToken"));
-  const [items, setItems] = useState<Item[]>([]);
+  const [items, setItems] = useState<BasketItem[]>([]);
 
   return (
     <AuthContext.Provider value={{ auth, setAuth }}>
