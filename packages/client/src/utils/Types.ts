@@ -1,4 +1,4 @@
-export type RequestMethod = "GET" | "POST" | "PUT" | "DELETE";
+export type RequestMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
 
 export type ApiResponse = {
   access_token: string;
@@ -16,24 +16,6 @@ export type RegisterUser = {
   password: string;
 };
 
-export type Item = {
-  id: number;
-  saleToItems: string[];
-};
-
-export type SaleToItem = {
-  id: number;
-  quantity: number;
-  item: Item;
-  sale: string;
-};
-
-export type Sale = {
-  id: number;
-  seller: string;
-  saleToItems: SaleToItem[];
-};
-
 export type RefreshToken = {
   id: number;
   token: string;
@@ -46,14 +28,53 @@ export type User = {
   email: string;
   passwordHash: string;
   role: string;
+  avatarUrl: string;
   createdAt: string;
   updatedAt: string;
-  sales: Sale[];
-  refreshTokens: RefreshToken[];
 };
 
 export type ErrorResponse = {
   message: string;
   error: string;
   statusCode: number;
+};
+
+export type GetSaleItem = {
+  itemId: number;
+  quantity: number;
+};
+
+export type GetSale = {
+  id: number;
+  saleToItems: GetSaleItem[];
+};
+
+export type Item = {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  imageUrl: string;
+  type: string;
+  originCountry: string;
+  region: string;
+  harvestYear: number;
+  manufacturer: string;
+};
+
+export type SaleItem = {
+  item: Item;
+  quantity: number;
+};
+
+export type Sale = {
+  id: number;
+  saleToItems: SaleItem[];
+};
+
+export type ResponceItemType = Omit<Item, "price"> & { price: string };
+
+export type GetItemsType = {
+  items: ResponceItemType[];
+  count: number;
 };

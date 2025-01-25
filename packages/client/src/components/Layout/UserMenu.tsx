@@ -8,20 +8,36 @@ import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import { useMenu } from "./hooks/useMenu";
 import { Link, useNavigate } from "react-router";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { api } from "../../utils/Api";
 import { AuthContext } from "../App/AppContext";
-
-const settings = [
-  { name: "Профиль", path: "/profile" },
-  { name: "Accout", path: "/account" },
-];
+import { User } from "../../utils/Types";
 
 export const UserMenu = () => {
   const [anchorEl, handleOpenMenu, handleCloseMenu] = useMenu();
   const navigate = useNavigate();
-
+  const [avatar, setAvatar] = useState("");
   const authorization = useContext(AuthContext);
+
+  useEffect(() => {
+    if (avatar.length === 0 && localStorage.getItem("userId")) {
+      const fetchUserData = async () => {
+        try {
+          const userData = await api.fetchWithAuth<User>(
+            authorization.setAuth,
+            navigate,
+            `users/${localStorage.getItem("userId") ?? ""}`,
+            "GET",
+          );
+          setAvatar(userData.avatarUrl);
+        } catch (error) {
+          console.error("Ошибка при загрузке данных пользователя:", error);
+        }
+      };
+
+      void fetchUserData();
+    }
+  }, [authorization.avatarPath]);
 
   const handleSignOut = () => {
     handleCloseMenu();
@@ -35,7 +51,7 @@ export const UserMenu = () => {
       {authorization.auth ? (
         <Tooltip title="Open settings">
           <IconButton onClick={handleOpenMenu} sx={{ p: 0 }}>
-            <Avatar />
+            <Avatar src={avatar} alt="Avatar" />
           </IconButton>
         </Tooltip>
       ) : (
@@ -54,11 +70,9 @@ export const UserMenu = () => {
         onClose={handleCloseMenu}
         sx={{ mt: 0.625 }}
       >
-        {settings.map((setting) => (
-          <MenuItem key={setting.name} onClick={handleCloseMenu} component={Link} to={setting.path}>
-            <Typography sx={{ textAlign: "center" }}>{setting.name}</Typography>
-          </MenuItem>
-        ))}
+        <MenuItem onClick={handleCloseMenu} component={Link} to="/profile">
+          <Typography sx={{ textAlign: "center" }}>Профиль</Typography>
+        </MenuItem>
         <MenuItem onClick={handleSignOut}>
           <Typography sx={{ textAlign: "center" }}>Выйти</Typography>
         </MenuItem>

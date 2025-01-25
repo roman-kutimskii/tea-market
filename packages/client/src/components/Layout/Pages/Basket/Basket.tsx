@@ -50,7 +50,6 @@ const Basket = () => {
     if (items.length <= 0) return;
     try {
       const body: PostSale = {
-        sellerId: 1,
         customerId: Number(localStorage.getItem("userId")),
         items: items.map((item) => ({ itemId: item.item.id, quantity: item.quantity })),
       };

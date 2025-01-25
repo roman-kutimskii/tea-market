@@ -15,19 +15,6 @@ import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { BasketItem, ItemsContext } from "../../../../App/AppContext";
 
-export type Item = {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
-  imageUrl: string;
-  type: string;
-  originCountry: string;
-  region: string;
-  harvestYear: number;
-  manufacturer: string;
-};
-
 type ItemCardProps = {
   basketItem: BasketItem;
 };
@@ -77,7 +64,11 @@ const ItemCard = ({ basketItem }: ItemCardProps) => {
             <Typography variant="h5" color="primary">
               {basketItem.item.name}
             </Typography>
-            <Typography variant="body2" color="textSecondary">
+            <Typography
+              variant="body2"
+              color="textSecondary"
+              sx={{ maxWidth: 300, maxHeight: 60, overflow: "hidden", textOverflow: "ellipsis" }}
+            >
               {basketItem.item.description}
             </Typography>
             <Typography variant="h6" color="secondary">
