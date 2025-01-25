@@ -1,15 +1,9 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Container, TextField, Select, MenuItem, Pagination, Box, Typography, SelectChangeEvent } from "@mui/material";
-import ItemCard, { Item } from "./ItemCard.tsx/ItemCard";
+import ItemCard from "./ItemCard.tsx/ItemCard";
 import { api } from "../../../../utils/Api";
 import { BasketItem, ItemsContext } from "../../../App/AppContext";
-
-type ResponceItemType = Omit<Item, "price"> & { price: string };
-
-type GetItemsType = {
-  items: ResponceItemType[];
-  count: number;
-};
+import { GetItemsType } from "../../../../utils/Types";
 
 const Catalog = () => {
   const basketItems = useContext(ItemsContext);
@@ -284,7 +278,17 @@ const Catalog = () => {
         page={page}
         onChange={handlePageChange}
         color="primary"
-        sx={{ marginTop: "20px", display: "flex", justifyContent: "center" }}
+        sx={{
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          display: "flex",
+          justifyContent: "center",
+          backgroundColor: "white",
+          borderTop: "1px solid #ccc",
+          padding: "8px 0",
+        }}
       />
     </Container>
   );

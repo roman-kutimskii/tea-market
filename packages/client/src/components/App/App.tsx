@@ -9,6 +9,7 @@ import { AppContext } from "./AppContext";
 import SignUpPage from "../Layout/Pages/AuthenticationPages/SignUpPage";
 import Catalog from "../Layout/Pages/Catalog/Catalog";
 import Basket from "../Layout/Pages/Basket/Basket";
+import Profile from "../Layout/Pages/Profile/Profile";
 
 function App() {
   useFavicon();
@@ -19,10 +20,10 @@ function App() {
         <Alert severity="warning">Это учебный проект. Пожалуйста, не совершайте на нём никаких действий.</Alert>
         <Routes>
           <Route element={<Layout />}>
-            <Route index element={<div>Index</div>} />
+            <Route index element={<Catalog />} />
             <Route path="catalog" element={<Catalog />} />
             <Route path="admin" element={<AdminPanel />} />
-            <Route path="profile" element={<div>Profile</div>} />
+            <Route path="profile" element={<Profile />} />
             <Route path="basket" element={<Basket />} />
             <Route path="signIn" element={<SignInPage />} />
             <Route path="signUp" element={<SignUpPage />} />

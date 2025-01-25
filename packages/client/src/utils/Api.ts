@@ -78,7 +78,7 @@ const login = async (
 
 const logout = () => {
   localStorage.clear();
-  window.location.reload();
+  // window.location.reload();
 };
 
 const refresh = async (
@@ -132,6 +132,7 @@ const registerUser = async (
   const decodedRole = (JSON.parse(decodedParams) as UserToken).role;
 
   localStorage.setItem("userRole", decodedRole);
+  await login(setAuth, navigate, body.email, body.password);
 };
 
 const fetchWithoutAuth = async <T>(

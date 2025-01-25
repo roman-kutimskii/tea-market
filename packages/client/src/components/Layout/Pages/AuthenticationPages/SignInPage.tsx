@@ -5,6 +5,7 @@ import { useContext, useEffect, useState } from "react";
 import { api } from "../../../../utils/Api.ts";
 import { AuthContext } from "../../../App/AppContext.tsx";
 import { Link as RouterLink, useNavigate } from "react-router";
+import { User } from "../../../../utils/Types.ts";
 
 const SignInPage = () => {
   const [email, setEmail] = useState("");
@@ -25,6 +26,18 @@ const SignInPage = () => {
     event.preventDefault();
     try {
       await api.login(authorization.setAuth, navigate, email, password);
+      try {
+        const userData = await api.fetchWithAuth<User>(
+          authorization.setAuth,
+          navigate,
+          `users/${localStorage.getItem("userId") ?? ""}`,
+          "GET",
+        );
+        authorization.setAvatarPath(userData.avatarUrl);
+      } catch (error) {
+        console.error("Ошибка при загрузке данных пользователя:", error);
+      }
+
       await navigate("/catalog");
     } catch (error) {
       console.error(error);
