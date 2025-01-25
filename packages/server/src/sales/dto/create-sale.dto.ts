@@ -1,5 +1,11 @@
 import { Type } from 'class-transformer';
-import { IsArray, IsInt, IsPositive, ValidateNested } from 'class-validator';
+import {
+  IsArray,
+  IsInt,
+  IsOptional,
+  IsPositive,
+  ValidateNested,
+} from 'class-validator';
 
 class SaleItemDto {
   @IsInt()
@@ -14,6 +20,7 @@ class SaleItemDto {
 export class CreateSaleDto {
   @IsInt()
   @IsPositive()
+  @IsOptional()
   sellerId?: number;
 
   @IsInt()

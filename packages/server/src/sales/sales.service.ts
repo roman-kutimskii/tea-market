@@ -59,17 +59,32 @@ export class SalesService {
     }
   }
 
-  findAll() {
-    return this.salesRepository.find({ relations: ['saleToItems', 'seller'] });
+  private adaptSales(sales: Sale[]) {
+    return sales.map((sale) => ({
+      saleToItems: sale.saleToItems.map((saleToItem) => ({
+        itemId: saleToItem.item.id,
+        quantity: saleToItem.quantity,
+      })),
+      sellerId: sale.seller?.id,
+      customerId: sale.customer.id,
+    }));
+  }
+
+  async findAll() {
+    const sales = await this.salesRepository.find({
+      relations: ['saleToItems', 'saleToItems.item', 'seller', 'customer'],
+    });
+
+    return this.adaptSales(sales);
   }
 
   async findOne(id: number) {
     try {
       const sale = await this.salesRepository.findOneOrFail({
         where: { id },
-        relations: ['saleToItems', 'seller'],
+        relations: ['saleToItems', 'saleToItems.item', 'seller', 'customer'],
       });
-      return sale;
+      return this.adaptSales([sale])[0];
     } catch (error) {
       if (error instanceof EntityNotFoundError) {
         throw new NotFoundException(error);
@@ -79,17 +94,19 @@ export class SalesService {
   }
 
   async findByCustomerId(customerId: number) {
-    return this.salesRepository.find({
+    const sales = await this.salesRepository.find({
       where: [{ customer: { id: customerId } }],
-      relations: ['saleToItems', 'seller', 'customer'],
+      relations: ['saleToItems', 'saleToItems.item', 'seller', 'customer'],
     });
+    return this.adaptSales(sales);
   }
 
   async findBySellerId(sellerId: number) {
-    return this.salesRepository.find({
+    const sales = await this.salesRepository.find({
       where: [{ seller: { id: sellerId } }],
-      relations: ['saleToItems', 'seller', 'customer'],
+      relations: ['saleToItems', 'saleToItems.item', 'seller', 'customer'],
     });
+    return this.adaptSales(sales);
   }
 
   async update(id: number, updateSaleDto: UpdateSaleDto) {
@@ -101,8 +118,11 @@ export class SalesService {
       const sale = await this.findOne(id);
 
       if (updateSaleDto.sellerId) {
-        const seller = await this.usersService.findOne(updateSaleDto.sellerId);
-        sale.seller = seller;
+        sale.sellerId = updateSaleDto.sellerId;
+      }
+
+      if (updateSaleDto.customerId) {
+        sale.customerId = updateSaleDto.customerId;
       }
 
       const updatedSale = await queryRunner.manager.save(Sale, sale);
