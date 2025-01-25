@@ -61,7 +61,7 @@ export class ItemsService {
   search(query: string) {
     return this.itemsRepository
       .createQueryBuilder('item')
-      .where('item.searchVector @@ plainto_tsquery(:query)', { query })
+      .where('item.name LIKE :query', { query: `%${query}%` })
       .getMany();
   }
 
