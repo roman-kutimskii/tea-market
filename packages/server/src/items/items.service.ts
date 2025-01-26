@@ -4,16 +4,23 @@ import { UpdateItemDto } from './dto/update-item.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Item } from './entities/item.entity';
 import { EntityNotFoundError, Repository } from 'typeorm';
+import { S3Service } from 'src/s3/s3.service';
 
 @Injectable()
 export class ItemsService {
   constructor(
     @InjectRepository(Item)
     private itemsRepository: Repository<Item>,
+    private s3Service: S3Service,
   ) {}
 
-  create(createItemDto: CreateItemDto) {
-    const item = this.itemsRepository.create(createItemDto);
+  async create(createItemDto: CreateItemDto) {
+    const { imageBase64, ...data } = createItemDto;
+    let imageUrl: string | undefined;
+    if (imageBase64) {
+      imageUrl = await this.s3Service.uploadBase64Image(imageBase64);
+    }
+    const item = this.itemsRepository.create({ imageUrl, ...data });
     return this.itemsRepository.save(item);
   }
 
@@ -69,8 +76,7 @@ export class ItemsService {
     const { imageBase64, ...data } = updateItemDto;
     let imageUrl: string | undefined;
     if (imageBase64) {
-      // TODO: Добавить сохранение картинки
-      imageUrl = 'https://cataas.com/cat';
+      imageUrl = await this.s3Service.uploadBase64Image(imageBase64);
     }
     const item = await this.findOne(id);
     Object.assign(item, { imageUrl, ...data });
