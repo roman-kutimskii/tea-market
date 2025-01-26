@@ -4,11 +4,12 @@ import ItemCard from "./ItemCard.tsx/ItemCard";
 import { api } from "../../../../utils/Api";
 import { BasketItem, ItemsContext } from "../../../App/AppContext";
 import { GetItemsType, ResponceItemType } from "../../../../utils/Types";
+import { filterValues } from "../../../../utils/Constants";
 
 const Catalog = () => {
   const basketItems = useContext(ItemsContext);
   const [items, setItems] = useState<BasketItem[]>(basketItems.items);
-  const [limit, setLimit] = useState(5);
+  const [limit, setLimit] = useState(6);
   const [sortBy, setSortBy] = useState("harvestYear");
   const [sortOrder, setSortOrder] = useState("");
   const [filterBy, setFilterBy] = useState("");
@@ -40,7 +41,7 @@ const Catalog = () => {
               return {
                 item: {
                   ...item,
-                  price: Number(item.price.replace(/[\s,?]/g, "")) / 100,
+                  price: Number(item.price.replace(/[\s,$,?]/g, "")),
                 },
                 quantity: 0,
               };
@@ -83,7 +84,7 @@ const Catalog = () => {
                       return {
                         item: {
                           ...item,
-                          price: Number(item.price.replace(/[\s,?]/g, "")) / 100,
+                          price: Number(item.price.replace(/[\s,$,?]/g, "")),
                         },
                         quantity: 0,
                       };
@@ -139,17 +140,8 @@ const Catalog = () => {
     setLimit(value > 0 ? value : 1);
   };
 
-  const filterValues: Record<string, string[]> = {
-    "": [""],
-    type: ["Черный", "Зеленый", "Желтый", "Белый", "Пуэр", "Улун"],
-    originCountry: ["Китай", "Индия", "Шри-Ланка"],
-    region: ["Ассам", "Дарджилинг", "Ува", "Фуцзянь", "Сычуань"],
-    harvestYear: Array.from({ length: 2026 - 2000 }, (_, i) => (2000 + i).toString()),
-    manufacturer: ["Tata Tea", "Dilmah", "Tenfu Tea"],
-  };
-
   return (
-    <Container style={{ height: "110vh" }}>
+    <Container sx={{ display: "flex", flexDirection: "column" }}>
       <Box marginBottom={2} marginTop={2} display="flex" flexDirection="row" alignItems="stretch">
         <TextField
           label="Поиск"
@@ -274,23 +266,9 @@ const Catalog = () => {
           <ItemCard key={item.item.id} basketItem={item} />
         ))}
       </Box>
-      <Pagination
-        count={totalPages}
-        page={page}
-        onChange={handlePageChange}
-        color="primary"
-        sx={{
-          position: "fixed",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          display: "flex",
-          justifyContent: "center",
-          backgroundColor: "white",
-          borderTop: "1px solid #ccc",
-          padding: "8px 0",
-        }}
-      />
+      <Box bottom="0" left="0" right="0" display="flex" justifyContent="center" paddingY={2}>
+        <Pagination count={totalPages} page={page} onChange={handlePageChange} color="primary" />
+      </Box>
     </Container>
   );
 };

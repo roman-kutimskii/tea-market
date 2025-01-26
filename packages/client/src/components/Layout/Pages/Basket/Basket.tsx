@@ -17,15 +17,7 @@ import { api } from "../../../../utils/Api";
 import { AuthContext, ItemsContext } from "../../../App/AppContext";
 import { useNavigate } from "react-router";
 import TableRowComponent from "./TableRow/TableRowComponent";
-
-type PostSale = {
-  sellerId?: number;
-  customerId: number;
-  items: {
-    itemId: number;
-    quantity: number;
-  }[];
-};
+import { PostSale } from "../../../../utils/Types";
 
 const Basket = () => {
   const { items, setItems } = useContext(ItemsContext);
@@ -36,7 +28,7 @@ const Basket = () => {
   const navigate = useNavigate();
 
   const calculateTotal = () => {
-    return items.reduce((acc, item) => acc + item.item.price * item.quantity, 0);
+    return items.reduce((acc, item) => acc + (!isNaN(item.item.price) ? item.item.price : 0) * item.quantity, 0);
   };
 
   const handleClose = (_event?: React.SyntheticEvent | Event, reason?: string) => {
@@ -53,7 +45,7 @@ const Basket = () => {
         customerId: Number(localStorage.getItem("userId")),
         items: items.map((item) => ({ itemId: item.item.id, quantity: item.quantity })),
       };
-      await api.fetchWithAuth<PostSale>(authorization.setAuth ,navigate, "sales", "POST", body);
+      await api.fetchWithAuth<PostSale>(authorization.setAuth, navigate, "sales", "POST", body);
       setItems([]);
       setMessageType("success");
       setOpen(true);

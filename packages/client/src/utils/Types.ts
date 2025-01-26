@@ -48,7 +48,18 @@ export type GetSaleItem = {
 
 export type GetSale = {
   id: number;
+  sellerId: number;
+  customerId: number;
   saleToItems: GetSaleItem[];
+};
+
+export type PostSale = {
+  sellerId?: number;
+  customerId: number;
+  items: {
+    itemId: number;
+    quantity: number;
+  }[];
 };
 
 export type Item = {

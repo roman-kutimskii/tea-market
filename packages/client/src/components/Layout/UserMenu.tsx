@@ -49,14 +49,14 @@ export const UserMenu = () => {
   return (
     <Box flexGrow={0}>
       {authorization.auth ? (
-        <Tooltip title="Open settings">
+        <Tooltip title="Открыть настройки">
           <IconButton onClick={handleOpenMenu} sx={{ p: 0 }}>
             <Avatar src={avatar} alt="Avatar" />
           </IconButton>
         </Tooltip>
       ) : (
-        <Tooltip title="Sign In">
-          <IconButton component={Link} to="/signIn">
+        <Tooltip title="Войти">
+          <IconButton color="inherit" component={Link} to="/signIn">
             <LoginIcon />
           </IconButton>
         </Tooltip>

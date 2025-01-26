@@ -16,8 +16,17 @@ export default defineConfig({
   server: {
     proxy: {
       "/tea-market/api": {
-        target: `http://localhost:3000`
+        target: `https://www.roman-kutimskii.tech`,
+        secure: false,
       },
     },
   },
+
+  // server: {
+  //   proxy: {
+  //     "/tea-market/api": {
+  //       target: `http://localhost:3000`,
+  //     },
+  //   },
+  // },
 });

@@ -33,9 +33,11 @@ const TableRowComponent = ({ basketItem }: TableRowProps) => {
     <>
       <TableRow key={basketItem.item.id}>
         <TableCell>{basketItem.item.name}</TableCell>
-        <TableCell align="right">{basketItem.item.price} ₽</TableCell>
+        <TableCell align="right">{!isNaN(basketItem.item.price) ? basketItem.item.price : 0} ₽</TableCell>
         <TableCell align="right">{basketItem.quantity}</TableCell>
-        <TableCell align="right">{basketItem.item.price * basketItem.quantity} ₽</TableCell>
+        <TableCell align="right">
+          {!isNaN(basketItem.item.price) ? basketItem.item.price : 0 * basketItem.quantity} ₽
+        </TableCell>
         <TableCell align="right">
           <Box display="flex" alignItems="center" justifyContent="end">
             <IconButton onClick={handleRemoveFromCart} color="primary">

@@ -14,6 +14,7 @@ import { useNavigate } from "react-router";
 import { Item, PostItem } from "../../../../../../utils/Types";
 import { AuthContext } from "../../../../../App/AppContext";
 import { api } from "../../../../../../utils/Api";
+import { filterValues } from "../../../../../../utils/Constants";
 
 type EntityRowProps = {
   setEntities: React.Dispatch<React.SetStateAction<Item[]>>;
@@ -30,8 +31,10 @@ const ItemEntityRow = ({ item, setEntities }: EntityRowProps) => {
   const handleUpdateEntity = () => {
     const fetchData = async () => {
       try {
-        const body: Partial<PostItem> = { ...newItem, imageBase64: newItem.imageUrl };
-
+        const body: Partial<PostItem> = {
+          ...newItem,
+          imageBase64: imgBase64 === item.imageUrl ? undefined : imgBase64,
+        };
         const response = await api.fetchWithAuth<Item>(
           authorization.setAuth,
           navigate,
@@ -42,7 +45,7 @@ const ItemEntityRow = ({ item, setEntities }: EntityRowProps) => {
         setNewItem(response);
         setEntities((prevEntities) => prevEntities.map((entity) => (entity.id !== response.id ? entity : response)));
       } catch (error) {
-        console.error("Ошибка при обновлении почты:", error);
+        console.error("Ошибка при обновлении товара:", error);
       }
     };
 
@@ -55,7 +58,6 @@ const ItemEntityRow = ({ item, setEntities }: EntityRowProps) => {
       const reader = new FileReader();
       reader.onloadend = () => {
         setImgBase64(reader.result as string);
-        setNewItem((prevItem) => ({ ...prevItem, imageUrl: reader.result as string }));
       };
       reader.readAsDataURL(file);
     }
@@ -100,14 +102,6 @@ const ItemEntityRow = ({ item, setEntities }: EntityRowProps) => {
   };
   const handleManufacturerChange = (event: SelectChangeEvent) => {
     setNewItem((prevItem) => ({ ...prevItem, manufacturer: event.target.value }));
-  };
-
-  const filterValues: Record<string, string[]> = {
-    type: ["Черный", "Зеленый", "Желтый", "Белый", "Пуэр", "Улун"],
-    originCountry: ["Китай", "Индия", "Шри-Ланка"],
-    region: ["Ассам", "Дарджилинг", "Ува", "Фуцзянь", "Сычуань"],
-    harvestYear: Array.from({ length: 2026 - 2000 }, (_, i) => (2000 + i).toString()),
-    manufacturer: ["Tata Tea", "Dilmah", "Tenfu Tea"],
   };
 
   return (
@@ -187,6 +181,7 @@ const ItemEntityRow = ({ item, setEntities }: EntityRowProps) => {
       </TableCell>
       <TableCell>
         <Select
+          sx={{ minWidth: 80 }}
           value={String(newItem.harvestYear)}
           onChange={handleHarvestYearChange}
           displayEmpty
