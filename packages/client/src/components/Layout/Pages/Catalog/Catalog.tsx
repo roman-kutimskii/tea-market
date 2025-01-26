@@ -3,7 +3,7 @@ import { Container, TextField, Select, MenuItem, Pagination, Box, Typography, Se
 import ItemCard from "./ItemCard.tsx/ItemCard";
 import { api } from "../../../../utils/Api";
 import { BasketItem, ItemsContext } from "../../../App/AppContext";
-import { GetItemsType } from "../../../../utils/Types";
+import { GetItemsType, ResponceItemType } from "../../../../utils/Types";
 
 const Catalog = () => {
   const basketItems = useContext(ItemsContext);
@@ -19,64 +19,65 @@ const Catalog = () => {
 
   const [search, setSearch] = useState("");
 
+  const fetchItems = async () => {
+    try {
+      let parameters = "?";
+      parameters += page > 0 ? `page=${String(page)}&` : "";
+      parameters += limit > 0 ? `limit=${String(limit)}&` : "";
+      parameters += sortBy.length > 0 ? `sortBy=${sortBy}&` : "";
+      parameters += sortOrder.length > 0 ? `sortOrder=${sortOrder}&` : "";
+      parameters += filterBy.length > 0 ? `filterBy=${filterBy}&` : "";
+      parameters += filterValue.length > 0 ? `filterValue=${filterValue}&` : "";
+      parameters = parameters.slice(0, -1);
+
+      const response = await api.fetchWithoutAuth<GetItemsType>("items" + parameters, "GET");
+      setItems(() => {
+        const existingItemsMap = new Map(basketItems.items.map((item) => [item.item.id, item]));
+
+        const mergedItems = response.items
+          .map((item) => {
+            if (!existingItemsMap.has(item.id)) {
+              return {
+                item: {
+                  ...item,
+                  price: Number(item.price.replace(/[\s,?]/g, "")) / 100,
+                },
+                quantity: 0,
+              };
+            } else {
+              return existingItemsMap.get(item.id);
+            }
+          })
+          .filter((item): item is BasketItem => item !== undefined);
+
+        return mergedItems;
+      });
+      setTotalPages(response.count > 0 ? Math.ceil(response.count / limit) : 1);
+    } catch (error) {
+      console.error("Failed to fetch items:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchItems = async () => {
-      try {
-        let parameters = "?";
-        parameters += page > 0 ? `page=${String(page)}&` : "";
-        parameters += limit > 0 ? `limit=${String(limit)}&` : "";
-        parameters += sortBy.length > 0 ? `sortBy=${sortBy}&` : "";
-        parameters += sortOrder.length > 0 ? `sortOrder=${sortOrder}&` : "";
-        parameters += filterBy.length > 0 ? `filterBy=${filterBy}&` : "";
-        parameters += filterValue.length > 0 ? `filterValue=${filterValue}&` : "";
-        parameters = parameters.slice(0, -1);
-
-        const response = await api.fetchWithoutAuth<GetItemsType>("items" + parameters, "GET");
-        setItems(() => {
-          const existingItemsMap = new Map(basketItems.items.map((item) => [item.item.id, item]));
-
-          const mergedItems = response.items
-            .map((item) => {
-              if (!existingItemsMap.has(item.id)) {
-                return {
-                  item: {
-                    ...item,
-                    price: Number(item.price.replace(/[\s,?]/g, "")) / 100,
-                  },
-                  quantity: 0,
-                };
-              } else {
-                return existingItemsMap.get(item.id);
-              }
-            })
-            .filter((item): item is BasketItem => item !== undefined);
-
-          return mergedItems;
-        });
-        setTotalPages(response.count > 0 ? Math.ceil(response.count / limit) : 1);
-      } catch (error) {
-        console.error("Failed to fetch items:", error);
-      }
-    };
-
     void fetchItems();
   }, [page, sortBy, sortOrder, filterBy, filterValue, limit]);
 
   useEffect(() => {
-    const fetchItems = async () => {
+    const fetchSearchItems = async () => {
       if (search.length === 0) {
+        void fetchItems();
         return;
       }
       try {
         const parameters = `?query=${search}`;
-        const response = await api.fetchWithoutAuth<GetItemsType>("items/search" + parameters, "GET");
+        const response = await api.fetchWithoutAuth<ResponceItemType[]>("items/search" + parameters, "GET");
         setItems(() => {
           const existingItemsMap = new Map(basketItems.items.map((item) => [item.item.id, item]));
 
           const mergedItems =
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-            response.items && response.items.length > 0
-              ? response.items
+            response && response.length > 0
+              ? response
                   .map((item) => {
                     if (!existingItemsMap.has(item.id)) {
                       return {
@@ -95,13 +96,13 @@ const Catalog = () => {
 
           return mergedItems;
         });
-        setTotalPages(response.count > 0 ? Math.ceil(response.count / limit) : 1);
+        setTotalPages(response.length > 0 ? Math.ceil(response.length / limit) : 1);
       } catch (error) {
         console.error("Failed to fetch items:", error);
       }
     };
 
-    void fetchItems();
+    void fetchSearchItems();
   }, [limit, search]);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -140,15 +141,15 @@ const Catalog = () => {
 
   const filterValues: Record<string, string[]> = {
     "": [""],
-    type: ["Черный", "Зеленый", "Красный"],
+    type: ["Черный", "Зеленый", "Желтый", "Белый", "Пуэр", "Улун"],
     originCountry: ["Китай", "Индия", "Шри-Ланка"],
     region: ["Ассам", "Дарджилинг", "Ува", "Фуцзянь", "Сычуань"],
-    harvestYear: ["2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024"],
+    harvestYear: Array.from({ length: 2026 - 2000 }, (_, i) => (2000 + i).toString()),
     manufacturer: ["Tata Tea", "Dilmah", "Tenfu Tea"],
   };
 
   return (
-    <Container>
+    <Container style={{ height: "110vh" }}>
       <Box marginBottom={2} marginTop={2} display="flex" flexDirection="row" alignItems="stretch">
         <TextField
           label="Поиск"
