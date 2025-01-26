@@ -61,6 +61,7 @@ export class SalesService {
 
   private adaptSales(sales: Sale[]) {
     return sales.map((sale) => ({
+      id: sale.id,
       saleToItems: sale.saleToItems.map((saleToItem) => ({
         itemId: saleToItem.item.id,
         quantity: saleToItem.quantity,
