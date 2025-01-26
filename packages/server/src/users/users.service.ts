@@ -79,6 +79,11 @@ export class UsersService {
 
   async update(id: number, updateUserDto: UpdateUserDto) {
     const user = await this.findOne(id);
+    if (updateUserDto.password) {
+      const salt = await genSalt();
+      user.passwordHash = await hash(updateUserDto.password, salt);
+      delete updateUserDto.password;
+    }
     Object.assign(user, updateUserDto);
     return this.usersRepository.save(user);
   }
