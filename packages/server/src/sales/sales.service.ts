@@ -117,16 +117,23 @@ export class SalesService {
     await queryRunner.startTransaction();
     try {
       const sale = await this.findOne(id);
-
+      if (!sale) {
+        throw new Error(`Sale with id ${id} not found`);
+      }
+      let seller: User | undefined;
       if (updateSaleDto.sellerId) {
-        sale.sellerId = updateSaleDto.sellerId;
+        seller = await this.usersService.findOne(updateSaleDto.sellerId);
       }
-
+      let customer: User | undefined;
       if (updateSaleDto.customerId) {
-        sale.customerId = updateSaleDto.customerId;
+        customer = await this.usersService.findOne(updateSaleDto.customerId);
       }
 
-      const updatedSale = await queryRunner.manager.save(Sale, sale);
+      const updatedSale = await queryRunner.manager.save(Sale, {
+        id,
+        seller,
+        customer,
+      });
 
       if (updateSaleDto.items) {
         if (sale.saleToItems.length) {
@@ -147,7 +154,7 @@ export class SalesService {
       }
 
       await queryRunner.commitTransaction();
-      return this.findOne(id);
+      return updatedSale;
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw error;
