@@ -18,8 +18,11 @@ import { AuthContext } from "../../../App/AppContext";
 import { CreateUser, GetSale, Item, ResponceItemType, Role, Sale, User } from "../../../../utils/Types";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
+type FullSale = Sale & { customerId: number };
+
 const Profile = () => {
   const [saleHistory, setSaleHistory] = useState<Sale[]>([]);
+  const [saleSellerHistory, setSaleSellerHistory] = useState<FullSale[]>([]);
   const [email, setEmail] = useState("");
   const [role, setRole] = useState<Role>("customer");
   const [avatarBase64, setAvatarBase64] = useState("");
@@ -84,8 +87,53 @@ const Profile = () => {
       }
     };
 
+    const fetchSellerHistory = async () => {
+      if (localStorage.getItem("userRole") !== "seller") {
+        return;
+      }
+      try {
+        const salesData = await api.fetchWithAuth<GetSale[]>(
+          authorization.setAuth,
+          navigate,
+          `sales/seller/${localStorage.getItem("userId") ?? ""}`,
+          "GET",
+        );
+        const transformedSales: FullSale[] = await Promise.all(
+          salesData.map(async (sale) => {
+            const saleToItems = await Promise.all(
+              sale.saleToItems.map(async (getSaleItem) => {
+                const responseItem = await api.fetchWithoutAuth<ResponceItemType>(
+                  `items/${String(getSaleItem.itemId)}`,
+                  "GET",
+                );
+                const item: Item = {
+                  ...responseItem,
+                  price: Number(responseItem.price.replace(/[\s,$,?]/g, "")),
+                };
+                return {
+                  item,
+                  quantity: getSaleItem.quantity,
+                };
+              }),
+            );
+
+            return {
+              id: sale.id,
+              sellerId: sale.sellerId,
+              customerId: sale.customerId,
+              saleToItems,
+            };
+          }),
+        );
+        setSaleSellerHistory(transformedSales);
+      } catch (error) {
+        console.error("Ошибка при загрузке истории покупок:", error);
+      }
+    };
+
     void fetchUserData();
     void fetchSalesHistory();
+    void fetchSellerHistory();
   }, []);
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -227,6 +275,56 @@ const Profile = () => {
           </Accordion>
         );
       })}
+      {role === "seller" && (
+        <>
+          <Typography variant="h5" sx={{ borderTop: "1px solid #ccc", marginTop: 4, paddingTop: 4, marginBottom: 2 }}>
+            История продаж
+          </Typography>
+          {saleSellerHistory.map((sale, saleIndex) => {
+            const totalSalePrice = sale.saleToItems.reduce((acc, saleItem) => {
+              return acc + saleItem.quantity * saleItem.item.price;
+            }, 0);
+            return (
+              <Accordion key={saleIndex}>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls={`panel${String(sale.id)}-content`}
+                  id={`panel${String(sale.id)}-header`}
+                >
+                  <Box display="flex" justifyContent="space-between" width="100%">
+                    <Typography>
+                      Продажа #{Math.abs(saleIndex - saleSellerHistory.length)} для пользователя с id {sale.customerId}
+                    </Typography>
+                    <Box>
+                      <Typography variant="h6" sx={{ marginRight: 2 }} color="primary">
+                        Общая стоимость:
+                      </Typography>
+                      <Typography variant="h6" sx={{ marginRight: 2 }}>
+                        {!isNaN(totalSalePrice) ? totalSalePrice.toFixed(2) : 0} ₽
+                      </Typography>
+                    </Box>
+                  </Box>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <List>
+                    {sale.saleToItems.map((saleItem, index) => {
+                      const totalPrice = saleItem.quantity * (!isNaN(saleItem.item.price) ? saleItem.item.price : 0);
+                      return (
+                        <ListItem key={index}>
+                          <ListItemText
+                            primary={`Название: ${saleItem.item.name}`}
+                            secondary={`Количество: ${String(saleItem.quantity)}, Цена: ${String(!isNaN(saleItem.item.price) ? saleItem.item.price : 0)}, Сумма: ${String(totalPrice)}`}
+                          />
+                        </ListItem>
+                      );
+                    })}
+                  </List>
+                </AccordionDetails>
+              </Accordion>
+            );
+          })}
+        </>
+      )}
     </>
   );
 };

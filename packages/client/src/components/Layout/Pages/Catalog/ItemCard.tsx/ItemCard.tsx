@@ -85,7 +85,7 @@ const ItemCard = ({ basketItem }: ItemCardProps) => {
               {basketItem.item.type}
             </Typography>
             <Typography variant="h6" color="primary">
-              {`${location} : ${String(basketItem.item.harvestYear)}`}
+              {`${location} ${basketItem.item.harvestYear ? ` : ${String(basketItem.item.harvestYear)}` : ""}`}
             </Typography>
           </CardContent>
           {count > 0 ? (
@@ -160,9 +160,13 @@ const ItemCard = ({ basketItem }: ItemCardProps) => {
           <Typography variant="body2" color="textSecondary">
             {location}
           </Typography>
-          <Typography variant="body2" color="textSecondary">
-            {`Урожай: ${String(basketItem.item.harvestYear)} года`}
-          </Typography>
+          {basketItem.item.harvestYear ? (
+            <Typography variant="body2" color="textSecondary">
+              {`Урожай: ${String(basketItem.item.harvestYear)} года`}
+            </Typography>
+          ) : (
+            ""
+          )}
           {count > 0 ? (
             <Box display="flex" alignItems="center" justifyContent="center" sx={{ marginBottom: 1 }}>
               <IconButton
