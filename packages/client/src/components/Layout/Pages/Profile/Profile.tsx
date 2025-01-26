@@ -63,7 +63,7 @@ const Profile = () => {
                 );
                 const item: Item = {
                   ...responseItem,
-                  price: Number(responseItem.price.replace(/[\s,$,?]/g, "")) / 100,
+                  price: Number(responseItem.price.replace(/[\s,$,?]/g, "")),
                 };
                 return {
                   item,

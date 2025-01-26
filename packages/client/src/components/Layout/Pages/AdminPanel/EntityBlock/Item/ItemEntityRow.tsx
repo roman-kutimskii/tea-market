@@ -31,7 +31,10 @@ const ItemEntityRow = ({ item, setEntities }: EntityRowProps) => {
   const handleUpdateEntity = () => {
     const fetchData = async () => {
       try {
-        const body: Partial<PostItem> = { ...newItem, imageBase64: newItem.imageUrl };
+        const body: Partial<PostItem> = {
+          ...newItem,
+          imageBase64: imgBase64 === item.imageUrl ? undefined : imgBase64,
+        };
         const response = await api.fetchWithAuth<Item>(
           authorization.setAuth,
           navigate,
@@ -55,7 +58,6 @@ const ItemEntityRow = ({ item, setEntities }: EntityRowProps) => {
       const reader = new FileReader();
       reader.onloadend = () => {
         setImgBase64(reader.result as string);
-        setNewItem((prevItem) => ({ ...prevItem, imageUrl: reader.result as string }));
       };
       reader.readAsDataURL(file);
     }
