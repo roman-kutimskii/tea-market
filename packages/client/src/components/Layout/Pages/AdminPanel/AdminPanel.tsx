@@ -1,9 +1,10 @@
 import { AppBar, Box, Tab, Tabs, Toolbar, Typography } from "@mui/material";
-import EntityBlock, { RequestInfoBlockGroup } from "./EntityBlock/EntityBlock";
 import { useContext, useEffect, useState } from "react";
-import "./AdminPanel.css";
 import { AuthContext } from "../../../App/AppContext";
 import { useNavigate } from "react-router";
+import UserEntityBlock from "./EntityBlock/User/UserEntityBlock";
+import ItemEntityBlock from "./EntityBlock/Item/ItemEntityBlock";
+import SaleEntityBlock from "./EntityBlock/Sale/SaleEntityBlock";
 
 const AdminPanel = () => {
   const authorization = useContext(AuthContext);
@@ -21,80 +22,6 @@ const AdminPanel = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authorization.auth]);
 
-  const requestsGroups: RequestInfoBlockGroup[] = [
-    {
-      text: "Пользователи",
-      path: "/tea-market/api/users",
-      requests: [
-        {
-          type: "GET",
-          text: "GET",
-          inputs: [],
-          path: "",
-          byId: false,
-        },
-        {
-          type: "GET",
-          text: "GET by ID",
-          inputs: [{ name: "id", text: "Идентификатор", type: "number" }],
-          path: "",
-          byId: true,
-        },
-        {
-          type: "POST",
-          text: "POST",
-          inputs: [
-            { name: "email", text: "Почта", type: "email" },
-            { name: "passwordHash", text: "Хэш пароля", type: "text" },
-          ],
-          path: "/seller",
-          byId: false,
-        },
-        {
-          type: "POST",
-          text: "POST",
-          inputs: [
-            { name: "email", text: "Почта", type: "email" },
-            { name: "passwordHash", text: "Хэш пароля", type: "text" },
-          ],
-          path: "/customer",
-          byId: false,
-        },
-        {
-          type: "PUT",
-          text: "PUT by ID",
-          inputs: [
-            { name: "id", text: "Идентификатор", type: "number" },
-            { name: "email", text: "Почта", type: "email" },
-            { name: "passwordHash", text: "Хэш пароля", type: "text" },
-          ],
-          path: "",
-          byId: true,
-        },
-        {
-          type: "DELETE",
-          text: "DELETE by ID",
-          inputs: [{ name: "id", text: "Идентификатор", type: "number" }],
-          path: "",
-          byId: true,
-        },
-      ],
-    },
-    {
-      text: "Товары",
-      path: "/tea-market/api/items",
-      requests: [
-        {
-          type: "GET",
-          text: "GET by ID",
-          inputs: [{ name: "id", text: "идентификатор", type: "number" }],
-          path: "path",
-          byId: true,
-        },
-      ],
-    },
-  ];
-
   const [selectedTab, setSelectedTab] = useState(0);
 
   const handleTabChange = (_event: unknown, newValue: number) => {
@@ -102,22 +29,22 @@ const AdminPanel = () => {
   };
 
   return (
-    <Box className="admin-panel">
-      <Typography variant="h4" gutterBottom>
+    <Box>
+      <Typography variant="h4" gutterBottom sx={{ marginTop: 2 }}>
         Страница администратора
       </Typography>
-      <AppBar className="app-bar" position="sticky" color="default">
+      <AppBar position="sticky" color="default">
         <Toolbar>
           <Tabs value={selectedTab} onChange={handleTabChange}>
-            {requestsGroups.map((group, index) => (
-              <Tab key={index} label={group.text} value={index} />
-            ))}
+            <Tab label={"Пользователи"} value={0} />
+            <Tab label={"Товары"} value={1} />
+            <Tab label={"Продажи"} value={2} />
           </Tabs>
         </Toolbar>
       </AppBar>
-      {requestsGroups.map((requestsGroup, index) =>
-        index === selectedTab ? <EntityBlock key={index} requestsGroup={requestsGroup} /> : <></>,
-      )}
+      {selectedTab === 0 ? <UserEntityBlock /> : <></>}
+      {selectedTab === 1 ? <ItemEntityBlock /> : <></>}
+      {selectedTab === 2 ? <SaleEntityBlock /> : <></>}
     </Box>
   );
 };

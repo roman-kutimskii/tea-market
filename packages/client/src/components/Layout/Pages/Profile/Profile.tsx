@@ -15,13 +15,13 @@ import {
 import { useNavigate } from "react-router";
 import { api } from "../../../../utils/Api";
 import { AuthContext } from "../../../App/AppContext";
-import { CreateUser, GetSale, Item, ResponceItemType, Sale, User } from "../../../../utils/Types";
+import { CreateUser, GetSale, Item, ResponceItemType, Role, Sale, User } from "../../../../utils/Types";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 const Profile = () => {
   const [saleHistory, setSaleHistory] = useState<Sale[]>([]);
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState("");
+  const [role, setRole] = useState<Role>("customer");
   const [avatarBase64, setAvatarBase64] = useState("");
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const navigate = useNavigate();

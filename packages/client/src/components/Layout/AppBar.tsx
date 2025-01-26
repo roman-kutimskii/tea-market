@@ -33,7 +33,7 @@ export const AppBar = () => {
   }, [authorization.auth]);
 
   return (
-    <MuiAppBar position="static">
+    <MuiAppBar position="sticky">
       <Toolbar>
         <NavMenu pages={pages} />
         <LogoIcon sx={{ mr: 1 }} />

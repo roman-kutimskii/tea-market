@@ -5,7 +5,7 @@ const getAuthToken = () => {
   return localStorage.getItem("jwtToken");
 };
 
-const fetchWithAuth = async <T>(
+const fetchWithAuth = async <T = unknown>(
   setAuth: React.Dispatch<React.SetStateAction<boolean>>,
   navigate: ReturnType<typeof useNavigate>,
   endpoint: string,

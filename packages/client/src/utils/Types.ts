@@ -5,9 +5,11 @@ export type ApiResponse = {
   refresh_token: string;
 };
 
+export type Role = "admin" | "seller" | "customer";
+
 export type CreateUser = {
   email: string;
-  role: string;
+  role: Role;
   password: string;
 };
 
@@ -27,7 +29,7 @@ export type User = {
   id: number;
   email: string;
   passwordHash: string;
-  role: string;
+  role: Role;
   avatarUrl: string;
   createdAt: string;
   updatedAt: string;
@@ -55,6 +57,18 @@ export type Item = {
   description: string;
   price: number;
   imageUrl: string;
+  type: string;
+  originCountry: string;
+  region: string;
+  harvestYear: number;
+  manufacturer: string;
+};
+
+export type PostItem = {
+  name: string;
+  description: string;
+  price: number;
+  imageBase64: string;
   type: string;
   originCountry: string;
   region: string;
