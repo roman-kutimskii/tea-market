@@ -15,6 +15,7 @@ import {
   Select,
   Avatar,
   SelectChangeEvent,
+  Pagination,
 } from "@mui/material";
 import { api } from "../../../../../../utils/Api";
 import { useNavigate } from "react-router";
@@ -40,25 +41,35 @@ const ItemEntityBlock = () => {
   });
   const [avatarBase64, setAvatarBase64] = useState("");
 
+  const limit = 10;
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+
   const navigate = useNavigate();
   const authorization = useContext(AuthContext);
 
   useEffect(() => {
     const fetchEntities = async () => {
       try {
-        const response = await api.fetchWithoutAuth<GetItemsType>("items", "GET");
+        let parameters = "?";
+        parameters += page > 0 ? `page=${String(page)}&` : "";
+        parameters += `limit=${String(limit)}&`;
+        parameters = parameters.slice(0, -1);
+
+        const response = await api.fetchWithoutAuth<GetItemsType>("items" + parameters, "GET");
         setEntities(
           response.items.map((item) => ({
             ...item,
             price: Number(item.price.replace(/[\s,?]/g, "")) / 100,
           })),
         );
+        setTotalPages(response.count > 0 ? Math.ceil(response.count / limit) : 1);
       } catch (error) {
         console.error("Ошибка загрузки данных:", error);
       }
     };
     void fetchEntities();
-  }, []);
+  }, [page]);
 
   const handleCreateEntity = () => {
     const fetchEntities = async () => {
@@ -145,6 +156,9 @@ const ItemEntityBlock = () => {
   };
   const handleManufacturerChange = (event: SelectChangeEvent) => {
     setNewItem((prevItem) => ({ ...prevItem, manufacturer: event.target.value }));
+  };
+  const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value);
   };
 
   return (
@@ -272,6 +286,7 @@ const ItemEntityBlock = () => {
                 </TableCell>
                 <TableCell>
                   <Select
+                    sx={{ minWidth: 80 }}
                     value={String(newItem.harvestYear)}
                     onChange={handleHarvestYearChange}
                     displayEmpty
@@ -311,6 +326,10 @@ const ItemEntityBlock = () => {
             </TableBody>
           </Table>
         </TableContainer>
+
+        <Box bottom="0" left="0" right="0" display="flex" justifyContent="center" paddingY={2}>
+          <Pagination count={totalPages} page={page} onChange={handlePageChange} color="primary" />
+        </Box>
       </Box>
     </Box>
   );

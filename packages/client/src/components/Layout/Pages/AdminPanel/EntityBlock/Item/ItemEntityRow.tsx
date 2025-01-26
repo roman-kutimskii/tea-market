@@ -180,6 +180,7 @@ const ItemEntityRow = ({ item, setEntities }: EntityRowProps) => {
       </TableCell>
       <TableCell>
         <Select
+          sx={{ minWidth: 80 }}
           value={String(newItem.harvestYear)}
           onChange={handleHarvestYearChange}
           displayEmpty
