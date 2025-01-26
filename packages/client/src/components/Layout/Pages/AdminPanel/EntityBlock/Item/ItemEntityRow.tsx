@@ -32,7 +32,6 @@ const ItemEntityRow = ({ item, setEntities }: EntityRowProps) => {
     const fetchData = async () => {
       try {
         const body: Partial<PostItem> = { ...newItem, imageBase64: newItem.imageUrl };
-
         const response = await api.fetchWithAuth<Item>(
           authorization.setAuth,
           navigate,
@@ -43,7 +42,7 @@ const ItemEntityRow = ({ item, setEntities }: EntityRowProps) => {
         setNewItem(response);
         setEntities((prevEntities) => prevEntities.map((entity) => (entity.id !== response.id ? entity : response)));
       } catch (error) {
-        console.error("Ошибка при обновлении почты:", error);
+        console.error("Ошибка при обновлении товара:", error);
       }
     };
 

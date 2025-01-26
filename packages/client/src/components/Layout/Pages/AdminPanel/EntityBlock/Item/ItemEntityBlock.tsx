@@ -60,7 +60,7 @@ const ItemEntityBlock = () => {
         setEntities(
           response.items.map((item) => ({
             ...item,
-            price: Number(item.price.replace(/[\s,?]/g, "")) / 100,
+            price: Number(item.price.replace(/[\s,$,?]/g, "")) / 100,
           })),
         );
         setTotalPages(response.count > 0 ? Math.ceil(response.count / limit) : 1);
@@ -114,7 +114,7 @@ const ItemEntityBlock = () => {
         );
         setSearchResult({
           ...response,
-          price: Number(response.price.replace(/[\s,?]/g, "")) / 100,
+          price: Number(response.price.replace(/[\s,$,?]/g, "")) / 100,
         });
       } catch (error) {
         console.error("Ошибка поиска записи:", error);

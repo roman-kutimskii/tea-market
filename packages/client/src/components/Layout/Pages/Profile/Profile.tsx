@@ -63,7 +63,7 @@ const Profile = () => {
                 );
                 const item: Item = {
                   ...responseItem,
-                  price: Number(responseItem.price.replace(/[\s,?]/g, "")) / 100,
+                  price: Number(responseItem.price.replace(/[\s,$,?]/g, "")) / 100,
                 };
                 return {
                   item,
@@ -204,7 +204,7 @@ const Profile = () => {
                     Общая стоимость:
                   </Typography>
                   <Typography variant="h6" sx={{ marginRight: 2 }}>
-                    {totalSalePrice.toFixed(2)} ₽
+                    {!isNaN(totalSalePrice) ? totalSalePrice.toFixed(2) : 0} ₽
                   </Typography>
                 </Box>
               </Box>
@@ -212,12 +212,12 @@ const Profile = () => {
             <AccordionDetails>
               <List>
                 {sale.saleToItems.map((saleItem, index) => {
-                  const totalPrice = saleItem.quantity * saleItem.item.price;
+                  const totalPrice = saleItem.quantity * (!isNaN(saleItem.item.price) ? saleItem.item.price : 0);
                   return (
                     <ListItem key={index}>
                       <ListItemText
                         primary={`Название: ${saleItem.item.name}`}
-                        secondary={`Количество: ${String(saleItem.quantity)}, Цена: ${String(saleItem.item.price)}, Сумма: ${totalPrice.toFixed(2)}`}
+                        secondary={`Количество: ${String(saleItem.quantity)}, Цена: ${String(!isNaN(saleItem.item.price) ? saleItem.item.price : 0)}, Сумма: ${String(totalPrice)}`}
                       />
                     </ListItem>
                   );

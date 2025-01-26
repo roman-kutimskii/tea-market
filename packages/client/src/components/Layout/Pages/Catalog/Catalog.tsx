@@ -41,7 +41,7 @@ const Catalog = () => {
               return {
                 item: {
                   ...item,
-                  price: Number(item.price.replace(/[\s,?]/g, "")) / 100,
+                  price: Number(item.price.replace(/[\s,$,?]/g, "")) / 100,
                 },
                 quantity: 0,
               };
@@ -84,7 +84,7 @@ const Catalog = () => {
                       return {
                         item: {
                           ...item,
-                          price: Number(item.price.replace(/[\s,?]/g, "")) / 100,
+                          price: Number(item.price.replace(/[\s,$,?]/g, "")) / 100,
                         },
                         quantity: 0,
                       };
