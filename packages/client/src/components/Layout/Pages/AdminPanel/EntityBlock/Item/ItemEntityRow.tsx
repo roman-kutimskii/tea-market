@@ -14,6 +14,7 @@ import { useNavigate } from "react-router";
 import { Item, PostItem } from "../../../../../../utils/Types";
 import { AuthContext } from "../../../../../App/AppContext";
 import { api } from "../../../../../../utils/Api";
+import { filterValues } from "../../../../../../utils/Constants";
 
 type EntityRowProps = {
   setEntities: React.Dispatch<React.SetStateAction<Item[]>>;
@@ -100,14 +101,6 @@ const ItemEntityRow = ({ item, setEntities }: EntityRowProps) => {
   };
   const handleManufacturerChange = (event: SelectChangeEvent) => {
     setNewItem((prevItem) => ({ ...prevItem, manufacturer: event.target.value }));
-  };
-
-  const filterValues: Record<string, string[]> = {
-    type: ["Черный", "Зеленый", "Желтый", "Белый", "Пуэр", "Улун"],
-    originCountry: ["Китай", "Индия", "Шри-Ланка"],
-    region: ["Ассам", "Дарджилинг", "Ува", "Фуцзянь", "Сычуань"],
-    harvestYear: Array.from({ length: 2026 - 2000 }, (_, i) => (2000 + i).toString()),
-    manufacturer: ["Tata Tea", "Dilmah", "Tenfu Tea"],
   };
 
   return (

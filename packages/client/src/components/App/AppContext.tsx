@@ -34,7 +34,7 @@ const AppContext: React.FC<AppContextProps> = ({ children }) => {
 
   return (
     <AuthContext.Provider value={{ auth, setAuth, avatarPath, setAvatarPath }}>
-      <ItemsContext.Provider value={{ items, setItems }}>{children}</ItemsContext.Provider>;
+      <ItemsContext.Provider value={{ items, setItems }}>{children}</ItemsContext.Provider>
     </AuthContext.Provider>
   );
 };

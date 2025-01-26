@@ -55,10 +55,17 @@ const ItemCard = ({ basketItem }: ItemCardProps) => {
     );
   };
 
+  const location = [
+    basketItem.item.originCountry !== "null" ? basketItem.item.originCountry : "",
+    basketItem.item.region ? basketItem.item.region : "",
+    basketItem.item.manufacturer ? basketItem.item.manufacturer : "",
+  ]
+    .filter((part) => part)
+    .join(" - ");
   return (
     <>
       <Box width="calc(33.333% - 11px)" boxSizing="border-box">
-        <Card sx={{ display: "flex", flexDirection: "column", height: "100%" }} onClick={handleCardClick}>
+        <Card sx={{ display: "flex", flexDirection: "column", minHeight: "600px" }} onClick={handleCardClick}>
           <CardMedia component="img" height="140" image={basketItem.item.imageUrl} alt={basketItem.item.name} />
           <CardContent sx={{ flexGrow: 1 }}>
             <Typography variant="h5" color="primary">
@@ -72,13 +79,13 @@ const ItemCard = ({ basketItem }: ItemCardProps) => {
               {basketItem.item.description}
             </Typography>
             <Typography variant="h6" color="secondary">
-              {basketItem.item.price} ₽
+              {!Number.isNaN(basketItem.item.price) ? basketItem.item.price : 0} ₽
             </Typography>
             <Typography variant="body2" color="textSecondary">
               {basketItem.item.type}
             </Typography>
             <Typography variant="h6" color="primary">
-              {`${basketItem.item.originCountry} - ${basketItem.item.region} - ${basketItem.item.manufacturer} : ${String(basketItem.item.harvestYear)}`}
+              {`${location} : ${String(basketItem.item.harvestYear)}`}
             </Typography>
           </CardContent>
           {count > 0 ? (
@@ -137,17 +144,21 @@ const ItemCard = ({ basketItem }: ItemCardProps) => {
             component="img"
             image={basketItem.item.imageUrl}
             alt={basketItem.item.name}
-            sx={{ marginBottom: 1 }}
+            sx={{
+              maxWidth: "80%",
+              maxHeight: "80%",
+              objectFit: "contain",
+            }}
           />
           <Typography variant="body1">{`Описание: ${basketItem.item.description}`}</Typography>
           <Typography variant="body2" color="textSecondary">
             {`Тип товара: ${basketItem.item.type}`}
           </Typography>
           <Typography variant="h6" color="primary" sx={{ marginBottom: 1 }}>
-            {`Цена за грамм: ${String(basketItem.item.price)} ₽`}
+            {`Цена за товар: ${String(!Number.isNaN(basketItem.item.price) ? basketItem.item.price : 0)} ₽`}
           </Typography>
           <Typography variant="body2" color="textSecondary">
-            {`${basketItem.item.originCountry} - ${basketItem.item.region} - ${basketItem.item.manufacturer} : ${String(basketItem.item.harvestYear)}`}
+            {location}
           </Typography>
           <Typography variant="body2" color="textSecondary">
             {`Урожай: ${String(basketItem.item.harvestYear)} года`}
