@@ -12,6 +12,7 @@ import {
   TableRow,
   Alert,
   Snackbar,
+  TextField,
 } from "@mui/material";
 import { api } from "../../../../utils/Api";
 import { AuthContext, ItemsContext } from "../../../App/AppContext";
@@ -24,6 +25,8 @@ const Basket = () => {
   const authorization = useContext(AuthContext);
   const [open, setOpen] = useState<boolean>(false);
   const [messageType, setMessageType] = useState<"success" | "error">("success");
+  const [customerId, setCustomerId] = useState(Number(localStorage.getItem("userId")));
+  const sellerId = Number(localStorage.getItem("userId"));
 
   const navigate = useNavigate();
 
@@ -42,7 +45,8 @@ const Basket = () => {
     if (items.length <= 0) return;
     try {
       const body: PostSale = {
-        customerId: Number(localStorage.getItem("userId")),
+        sellerId: localStorage.getItem("userRole") === "seller" && sellerId !== customerId ? sellerId : undefined,
+        customerId: customerId,
         items: items.map((item) => ({ itemId: item.item.id, quantity: item.quantity })),
       };
       await api.fetchWithAuth<PostSale>(authorization.setAuth, navigate, "sales", "POST", body);
@@ -56,8 +60,25 @@ const Basket = () => {
     }
   };
 
+  const handleCustomerIdChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCustomerId(Number(event.target.value));
+  };
+
   return (
     <>
+      {localStorage.getItem("userRole") === "seller" ? (
+        <TextField
+          sx={{ marginTop: 10, marginBottom: 10 }}
+          label="Id покупателя"
+          variant="outlined"
+          type="number"
+          value={customerId}
+          onChange={handleCustomerIdChange}
+          style={{ flex: "0 0 20%" }}
+        />
+      ) : (
+        ""
+      )}
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
